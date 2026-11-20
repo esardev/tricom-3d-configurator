@@ -1,0 +1,23 @@
+# live configuration (copy app/config.example.php -> app/config.php)
+app/config.php
+.env
+.env.*
+# runtime data
+app/storage/logs/*
+!app/storage/logs/index.html
+app/storage/sessions/*
+app/storage/quotes/*
+!app/storage/quotes/.htaccess
+!app/storage/quotes/index.html
+uploads/*
+!uploads/.htaccess
+!uploads/index.html
+# release artifacts / dumps
+*.zip
+*.log
+node_modules/
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

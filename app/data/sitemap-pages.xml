@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Šablon za /sitemap.xml (sitemap.php): stalne strane; lastmod stranama sa sadržajem iz baze računa site_sitemap(). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://tricom.rs/</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/proizvodi.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/proizvodi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/products.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/proizvodi.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/usluge.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/usluge.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/services.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/usluge.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/plazma.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/plazma.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/plasma-cutting.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/plazma.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/o-nama.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/o-nama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/o-nama.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/reference.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/reference.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/references.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/reference.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/galerija.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/galerija.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/gallery.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/galerija.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/kontakt.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/kontakt.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/kontakt.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/konfigurator.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/konfigurator.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/configurator.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/konfigurator.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/products.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/proizvodi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/products.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/proizvodi.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/services.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/usluge.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/services.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/usluge.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/plasma-cutting.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/plazma.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/plasma-cutting.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/plazma.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/o-nama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/o-nama.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/references.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/reference.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/references.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/reference.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/gallery.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/galerija.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/gallery.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/galerija.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/kontakt.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/kontakt.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/configurator.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/konfigurator.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/configurator.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/konfigurator.html"/>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/kalkulatori.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/kalkulatori.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/calculators.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/kalkulatori.html"/>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tricom.rs/en/calculators.html</loc>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://tricom.rs/kalkulatori.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tricom.rs/en/calculators.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tricom.rs/kalkulatori.html"/>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- @@DETAILS: strane detalja aktivnih proizvoda i usluga dodaje app/site/products.php (site_sitemap) -->
+</urlset>

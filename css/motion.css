@@ -1,0 +1,237 @@
+/* ==========================================================================
+   TRICOM — motion.css  („Forged Glass“: pravila koja prate js/motion.js)
+   Zavesa između strana (.pt), prikovane sekcije (.pin / .pin__stick / --p),
+   staklo bez zamućenja dok je sekcija prikovana (.is-pinning), nagib i sjaj
+   pokazivača na .g-card (--tx/--ty, --mx/--my), magnetna dugmad, kapsulasti
+   reveal (data-reveal="capsule"), zamućenje brojača, paralaksa.
+   Jedna kriva (--ease), trajanja 200 / 400 / 700 / 1000 ms; samo transform i
+   opacity (clip-path za reveal), will-change štedljivo.
+   html.tier-low i prefers-reduced-motion gase sve na kraju datoteke.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Zavesa između strana — boja podloge teme sa blagim „prelomljenim“ fasetama
+   i znak TRICOM; 350 ms. z 130.
+   -------------------------------------------------------------------------- */
+.pt {
+  position: fixed; inset: 0;
+  z-index: 130;
+  display: grid; place-items: center;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(112deg, rgba(255, 255, 255, .07) 0 38%, transparent 38.15% 61.85%, rgba(0, 0, 0, .06) 62%),
+    linear-gradient(248deg, transparent 0 55%, rgba(255, 255, 255, .05) 55.15%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 350ms var(--ease), visibility 0s linear 350ms;
+}
+.pt.is-on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 350ms var(--ease), visibility 0s;
+}
+.pt.no-anim, .pt.no-anim .pt__logo { transition: none !important; }
+.pt__logo {
+  width: clamp(140px, 16vw, 220px);
+  height: auto;
+  opacity: .94;
+  transform: scale(.96);
+  transition: transform 350ms var(--ease);
+}
+.pt.is-on .pt__logo { transform: none; }
+
+/* --------------------------------------------------------------------------
+   Prikovane sekcije
+   .pin[data-pin-steps] → js/motion.js daje --pin-h (koraci × 100vh), --p (0–1)
+   i klasu .is-pinned (samo kad sadržaj staje u ekran); bez nje sekcija je
+   obična, statična. Dok je 0 < --p < 1 sekcija nosi .is-pinning.
+   -------------------------------------------------------------------------- */
+.pin { --p: 0; }
+.pin.is-pinned {
+  height: var(--pin-h, auto);
+  padding-block: 0;
+}
+.pin.is-pinned > .pin__stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 16px;
+}
+/* .wrap više nije direktno dete .tex-grid: sloj iznad nacrtne mreže drži omotač. */
+.tex-grid > .pin__stick { position: relative; z-index: 1; }
+.pin.is-pinned > .pin__stick > .wrap { width: 100%; }
+/* Zbijeniji vertikalni ritam dok je sekcija prikovana, da ceo kadar stane u ekran. */
+.pin.is-pinned .sectionix { margin-bottom: 16px; }
+.pin.is-pinned .shead { margin-bottom: 32px; }
+
+/* Staklo dok je sekcija prikovana: puna ispuna, bez zamućenja (nema skupog
+   ponovnog kompozitovanja na svakom frejmu skrola). */
+.is-pinning .g-card {
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  background: var(--glass-fill-solid, var(--surface));
+}
+
+/* 03/10 „Tri načina“: tri kartice ulaze zdesna, jedna za drugom
+   (--k je napredak kartice 0–1 izveden iz --p). */
+.pin.is-pinned .g3 > .card {
+  --i: 0;
+  --k: clamp(0, calc((var(--p) - var(--i) * .14 - .06) / .3), 1);
+  transform: translate3d(calc((1 - var(--k)) * 48vw), 0, 0);
+  opacity: calc(.12 + var(--k) * .88);
+  will-change: transform;
+}
+.pin.is-pinned .g3 > .card:nth-child(2) { --i: 1; }
+.pin.is-pinned .g3 > .card:nth-child(3) { --i: 2; }
+
+/* 04/10 „CNC plazma“: medij (kasnije rendgenski render) se otkriva maskom
+   sleva nadesno — generička kuka [data-pin-reveal] na omotaču medija. */
+.pin.is-pinned [data-pin-reveal] {
+  clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0);
+}
+
+/* 07/10 „Proces“: linija koraka prati napredak (motion.js piše i inline
+   --pfill jer ga main.js takođe postavlja po geometriji). */
+.pin.is-pinned .process { --pfill: calc(var(--p) * 100%); }
+
+/* --------------------------------------------------------------------------
+   Nagib i sjaj pokazivača na staklenim karticama. motion.js daje --tx/--ty
+   (stepeni) i --mx/--my (px) samo dok je kartica pod mišem (.is-tilt); u miru
+   kartica nema transform iz ovog sloja.
+   -------------------------------------------------------------------------- */
+.g-card { position: relative; isolation: isolate; }
+.g-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: -1;                       /* iznad ispune stakla, ispod sadržaja */
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(91, 155, 255, .18), rgba(91, 155, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .g-card.is-tilt {
+    transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg));
+    will-change: transform;
+  }
+  .g-card:hover::after { opacity: 1; }
+
+  /* Magnetna dugmad: do 6 px ka pokazivaču (--mgx/--mgy iz motion.js). */
+  .btn:not(.btn--glass) { transform: translate3d(var(--mgx, 0px), var(--mgy, 0px), 0); }
+}
+
+/* --------------------------------------------------------------------------
+   Kapsulasti reveal — data-reveal="capsule": od pilule do konačnog oblika,
+   700 ms (clip-path inset … round). Klasu .is-in daje main.js (modul 5);
+   posle prelaza motion.js dodaje .is-settled i clip-path se skida da ne seče
+   senku. Elementi sa .shape-* nose SVG clip-path, pa dobijaju skalu + opacity.
+   -------------------------------------------------------------------------- */
+/* Početni rez ostavlja 24 % kutije vidljivo (40 % × 60 %): Chrome-ov
+   IntersectionObserver seče presek i sopstvenim clip-path-om cilja, a reveal
+   u main.js traži prag 0,12 — tešnja pilula se nikad ne bi otvorila. */
+[data-reveal="capsule"]:not([class*="shape-"]) {
+  -webkit-mask-image: none;
+          mask-image: none;
+  clip-path: inset(30% 20% 30% 20% round 999px);
+  opacity: 0;
+  transition: clip-path var(--dur-700, 700ms) var(--ease), opacity var(--dur-700, 700ms) var(--ease);
+  transition-delay: var(--rd, 0ms);
+}
+[data-reveal="capsule"]:not([class*="shape-"]).is-in {
+  clip-path: inset(0 0 0 0 round var(--r-l, 36px));
+  opacity: 1;
+}
+[data-reveal="capsule"]:not([class*="shape-"]).is-settled { clip-path: none; }
+
+[data-reveal="capsule"][class*="shape-"] {
+  -webkit-mask-image: none;
+          mask-image: none;
+  opacity: 0;
+  transform: scale(.94);
+  transition: transform var(--dur-700, 700ms) var(--ease), opacity var(--dur-700, 700ms) var(--ease);
+  transition-delay: var(--rd, 0ms);
+}
+[data-reveal="capsule"][class*="shape-"].is-in { opacity: 1; transform: none; }
+
+/* --------------------------------------------------------------------------
+   Brojači: kotur cifara + zamućenje koje se slegne (1000 ms, kašnjenje 40 ms
+   po cifri zdesna). Ćelija .odo nosi konačnu cifru kao tekst (<b>, nevidljiv
+   dok se kotur okreće); traka 0…9…cifra je ::before iz data-strip, pa ne
+   ulazi u textContent — tekst elementa je tačan u svakom trenutku.
+   motion.js daje --odo-d (kašnjenje) i --odo-y (-N em) pri startu.
+   -------------------------------------------------------------------------- */
+[data-count].is-odo { filter: blur(6px); }
+[data-count].is-odo.is-settle {
+  filter: blur(0);
+  transition: filter var(--dur-1000, 1000ms) var(--ease);
+}
+[data-count].is-odo .odo {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  overflow: hidden;
+  vertical-align: -0.125em;
+}
+[data-count].is-odo .odo > b { visibility: hidden; font-weight: inherit; color: inherit; }
+[data-count].is-odo .odo::before {
+  content: attr(data-strip);
+  position: absolute;
+  left: 0; top: 0;
+  display: block;
+  white-space: pre;
+  line-height: 1;
+  transform: translateY(var(--odo-y, 0em));
+  transition: transform var(--dur-1000, 1000ms) var(--ease) var(--odo-d, 0ms);
+  will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   Paralaksa
+   -------------------------------------------------------------------------- */
+[data-parallax] { will-change: transform; }
+
+/* --------------------------------------------------------------------------
+   Nizak razred i smanjeno kretanje: sve gore je ugašeno.
+   -------------------------------------------------------------------------- */
+html.tier-low .pt { display: none !important; }
+html.tier-low .pin.is-pinned { height: auto; padding-block: var(--section-y); }
+html.tier-low .pin.is-pinned > .pin__stick { position: relative; height: auto; display: block; padding-block: 0; }
+html.tier-low .pin .card,
+html.tier-low .pin [data-pin-reveal] { transform: none !important; opacity: 1 !important; clip-path: none !important; }
+html.tier-low .pin .process { --pfill: 100%; }
+html.tier-low .g-card,
+html.tier-low .g-card.is-tilt { transform: none !important; will-change: auto; }
+html.tier-low .g-card::after { display: none; }
+html.tier-low .g-card {
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+  background: var(--glass-fill-solid, var(--surface));
+}
+html.tier-low .btn { transform: none !important; }
+html.tier-low [data-reveal="capsule"] {
+  clip-path: none !important; opacity: 1 !important; transform: none !important; transition: none !important;
+}
+html.tier-low [data-count] { filter: none !important; transition: none !important; }
+html.tier-low [data-parallax] { transform: none !important; will-change: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pt { display: none !important; }
+  .pin.is-pinned { height: auto; padding-block: var(--section-y); }
+  .pin.is-pinned > .pin__stick { position: relative; height: auto; display: block; padding-block: 0; }
+  .pin .card,
+  .pin [data-pin-reveal] { transform: none !important; opacity: 1 !important; clip-path: none !important; }
+  .pin .process { --pfill: 100%; }
+  .g-card, .g-card.is-tilt { transform: none !important; will-change: auto; }
+  .g-card::after { display: none; }
+  .btn { transform: none !important; }
+  [data-reveal="capsule"] { clip-path: none !important; opacity: 1 !important; transform: none !important; transition: none !important; }
+  [data-count] { filter: none !important; transition: none !important; }
+  [data-parallax] { transform: none !important; will-change: auto; }
+}

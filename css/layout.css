@@ -1,0 +1,1532 @@
+/* ==========================================================================
+   TRICOM — layout.css
+   Header, prekidač teme, navigacija, hero sa tri ekrana, zaglavlja
+   podstranica („cinematic“), futer, kursor
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Scroll progress — hairline svetla
+   -------------------------------------------------------------------------- */
+.scrollbar-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px;
+  z-index: calc(var(--z-header) + 2);
+  background: transparent;
+  pointer-events: none;
+}
+.scrollbar-progress i {
+  display: block; height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--brand), var(--arc));
+}
+
+/* --------------------------------------------------------------------------
+   Header — tanka traka: providna preko hero-a, puna posle njega
+   -------------------------------------------------------------------------- */
+/* Forged Glass: traka je staklena šipka — zamućenje strane ispod,
+   --glass-fill-2, hairline dole; preko hero-a (.is-over) providna. */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: var(--glass-fill-2);
+  border-bottom: 1px solid var(--glass-stroke);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  color: var(--fg);
+  transition: transform var(--dur) var(--ease), background var(--dur-fast) var(--ease), border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.site-header.is-hidden { transform: translateY(-102%); }
+.site-header.is-solid { background: var(--glass-fill-2); border-bottom-color: var(--glass-stroke); }
+
+/* --------------------------------------------------------------------------
+   Providna traka preko hero-a / zaglavlja podstranice — JEDAN kod za svih
+   9 strana. Klasu .is-over nosi markup od početka (nema bleska pune trake
+   pre JS-a); header() u js/main.js je skida čim se prescroluje donja ivica
+   prvog elementa .hero, .pagehead ili .emptyhead. Hero je sada u boji teme
+   (beton u svetloj, grafit u tamnoj), pa traka nosi --hero-fg umesto
+   tvrdo upisane bele.
+   -------------------------------------------------------------------------- */
+.site-header.is-over {
+  background: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  color: var(--cine-fg);
+}
+.site-header.is-over .nav__link,
+.site-header.is-over .nav__chev { color: var(--cine-fg-70); }
+.site-header.is-over .nav__link:hover,
+.site-header.is-over .nav__link[aria-current],
+.site-header.is-over .nav__item--has:hover .nav__chev { color: var(--cine-fg); }
+.site-header.is-over .header__phone { color: var(--cine-fg); border-color: var(--cine-line); }
+.site-header.is-over .burger,
+.site-header.is-over .themesw,
+.site-header.is-over .langsw { border-color: var(--cine-line); color: var(--cine-fg); }
+.site-header.is-over .burger i { background: var(--cine-fg); }
+.site-header.is-over .langsw__b { color: var(--cine-fg-70); }
+.site-header.is-over .langsw__b[aria-current="true"] { color: var(--cine-fg); }
+.site-header.is-over .langsw__sep { background: var(--cine-line); }
+/* Boja se menja u istom ritmu kao pozadina trake */
+.site-header .nav__link,
+.site-header .header__phone,
+.site-header .burger,
+.site-header .burger i,
+.site-header .themesw,
+.site-header .langsw__b,
+.site-header .brand img { transition: color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), transform var(--dur) var(--ease); }
+
+.header__inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (min-width: 1440px) { .header__inner { gap: 16px; } }
+
+/* Logotip je sam po sebi brend-link — bez tekstualnog lockupa.
+   Visina 36 / 44 / 52 px (telefon / tablet / od 1200 px); širina sledi iz
+   atributa width/height slike (610 × 300), pa nema pomeranja pri učitavanju.
+   Izvorna slika je 610 px široka: na 52 px visine (106 px širine) ostaje
+   oštra i na 2× ekranima. */
+.brand {
+  display: flex;
+  align-items: center;
+  flex: none;
+  position: relative;
+}
+.brand img {
+  height: 36px;
+  width: auto;
+  image-rendering: auto;
+}
+@media (min-width: 769px) { .brand img { height: 44px; } }
+@media (min-width: 1200px) { .brand img { height: 52px; } }
+.brand:hover img { opacity: .86; }
+
+/* --------------------------------------------------------------------------
+   Navigacija — tačno osam stavki u jednom redu od 1440 px naviše (prelom je
+   zabranjen); do 1439 px traka prelazi na mobilni meni. Stavke „Početna“ nema
+   — na početnu vodi logotip. Slovo je krupno i raste sa širinom: 19 px
+   (1440–1599), 24 px (1600–1759), 28 px (od 1760; ranije 14 px); od 1600 px
+   traka je šira od sadržaja (css/glass.css, --hdr-w) da bi krupna slova
+   stala. Prelomi su izmereni za SR i EN oznake (izmene klijenta, krug 2).
+   Dve stavke imaju podmeni (Proizvodi, Usluge): oznaka je veza ka strani, a
+   strelica posle nje (10 px, potez 1.5) je zasebno dugme koje otvara podmeni
+   klikom ili tastaturom (Enter / Space / ↓; u podmeniju ↑ ↓ Home End, Esc
+   zatvara i vraća fokus). Hover otvara isto. Logika: modul 4b u js/main.js.
+   -------------------------------------------------------------------------- */
+.nav { display: none; flex: 1 1 auto; justify-content: center; min-width: 0; }
+@media (min-width: 1440px) { .nav { display: flex; } }
+/* Od 1280 px osam stavki stoji tačno na sredini ekrana (x-osa), nezavisno od
+   širine logotipa i grupe desno (SR | EN · tema · dugme); logotip i stavke
+   dele istu vertikalnu osu. Ispod 1280 px za to nema mesta — traka je u toku. */
+@media (min-width: 1280px) {
+  .header__inner { position: relative; }
+  .nav { position: absolute; left: 50%; top: 0; bottom: 0; align-items: center; transform: translateX(-50%); }
+  .langsw { margin-left: auto; }
+}
+
+.nav__list { display: flex; align-items: center; gap: var(--ngap, 4px); }
+@media (min-width: 1600px) { .nav__list { --ngap: 8px; } }
+
+.nav__item { position: relative; display: flex; align-items: center; }
+
+.nav__link {
+  position: relative;
+  display: block;
+  padding: 10px 4px;
+  font-size: 1.1875rem;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--fg-muted);
+  transition: color var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+@media (min-width: 1600px) { .nav__link { font-size: 1.5rem; } }
+@media (min-width: 1760px) { .nav__link { font-size: 1.75rem; } }
+/* Aktivna stavka: 2 px brend podvlaka tačno u širini oznake (veza nosi samo
+   oznaku — strelica je posebno dugme). Hover crta istu liniju sleva. */
+.nav__link::after {
+  content: '';
+  position: absolute;
+  left: 4px; right: 4px; bottom: 2px;
+  height: 2px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.site-header.is-over .nav__link::after { background: var(--arc); }
+.nav__link:hover { color: var(--fg-strong); }
+.nav__link:hover::after { transform: scaleX(1); }
+.nav__link[aria-current] { color: var(--fg-strong); font-weight: 600; }
+.nav__link[aria-current]::after { transform: scaleX(1); }
+
+/* Strelica podmenija — POSLE oznake */
+.nav__chev {
+  display: grid;
+  place-items: center;
+  width: 20px; height: 28px;
+  margin-left: -2px;
+  color: var(--fg-muted);
+  border-radius: var(--r-xs);
+  transition: color var(--dur-fast) var(--ease);
+}
+.nav__chev svg {
+  width: 10px; height: 10px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.nav__item--has:hover .nav__chev,
+.nav__chev[aria-expanded="true"] { color: var(--fg-strong); }
+.nav__item--has:hover .nav__chev svg,
+.nav__chev[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Podmeni = stakleni list (L2), radijus --r-m, stavke sa unutrašnjim razmakom. */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px); left: -12px;
+  min-width: 256px;
+  padding: 10px;
+  /* Podmeni visi IZ trake koja već ima backdrop-filter: ugnježdeno zamućenje
+     vidi samo sadržaj trake, ne stranu ispod — zato puna površina stakla
+     (--glass-fill-solid), a recept stakla nose obod, svetla linija i senka. */
+  background: var(--glass-fill-solid);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  opacity: 0;
+  visibility: hidden;
+  /* zatvaranje: vidljivost se gasi tek posle pretapanja */
+  transition: opacity var(--dur-fast) var(--ease), visibility 0s linear var(--dur-fast);
+}
+/* mostić preko razmaka između trake i podmenija, da hover ne pukne */
+.dropdown::before { content: ''; position: absolute; left: 0; right: 0; top: -18px; height: 18px; }
+.nav__item--has:hover .dropdown,
+.nav__item--has.is-open .dropdown {
+  opacity: 1; visibility: visible;
+  /* otvaranje: odmah vidljiv, pa fokus sa tastature može odmah na prvu stavku */
+  transition: opacity var(--dur-fast) var(--ease), visibility 0s;
+}
+/* Ručno zatvoren podmeni (Esc, klik) ostaje zatvoren i dok je miš nad njim. */
+.nav__item--has.is-shut .dropdown { opacity: 0; visibility: hidden; }
+.dropdown a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+  border-left: 2px solid transparent;
+  border-radius: var(--r-s);
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.dropdown a:hover,
+.dropdown a:focus-visible {
+  color: var(--fg-strong);
+  background: var(--accent-soft);
+  border-left-color: var(--brand);
+  outline-offset: -2px;
+}
+.dropdown a[aria-current="page"] { color: var(--fg-strong); border-left-color: var(--brand); }
+
+/* Desni skup: jezik · tema · „Zatražite ponudu“ */
+.header__cta {
+  display: none;
+  flex: none;
+}
+@media (min-width: 1440px) { .header__cta { display: block; } }
+.header__cta .btn { white-space: nowrap; }
+@media (max-width: 1279px) { .header__cta .btn { padding-inline: 20px; } }
+
+/* --------------------------------------------------------------------------
+   Prekidač jezika SR | EN (logika: js/lang.js)
+   -------------------------------------------------------------------------- */
+/* Isti 40 px hairline „pill“ kao prekidač teme i dugmad doka. */
+.langsw {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+}
+@media (min-width: 1440px) { .langsw { display: flex; } }
+
+.langsw__b {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  padding: 4px 0;
+  transition: color var(--dur-fast) var(--ease);
+}
+.langsw__b:hover { color: var(--accent); }
+.langsw__b[aria-current="true"] { color: var(--fg-strong); font-weight: 500; }
+.langsw__sep { width: 1px; height: 12px; background: var(--line-strong); flex: none; }
+
+/* Prekidač u podnožju mobilnog menija */
+.mnav__foot .langsw { display: flex; }
+
+/* Poruka „engleska verzija je u pripremi“ — pravi je js/lang.js. */
+.lang-toast {
+  position: fixed;
+  top: calc(var(--header-h) + 10px);
+  right: var(--gutter);
+  z-index: calc(var(--z-header) + 5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(360px, calc(100vw - var(--gutter) * 2));
+  padding: 12px 12px 12px 15px;
+  background: var(--plate-900);
+  color: var(--cine-fg);
+  border: 1px solid var(--cine-line);
+  border-left: 2px solid var(--arc);
+  border-radius: var(--r-s);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.lang-toast[hidden] { display: none; }
+.lang-toast.is-on { opacity: 1; }
+.lang-toast__x {
+  flex: none;
+  width: 22px; height: 22px;
+  display: grid;
+  place-items: center;
+  color: var(--steel-300);
+  font-size: 17px;
+  line-height: 1;
+  transition: color var(--dur-fast);
+}
+.lang-toast__x:hover { color: var(--white); }
+/* Svetla tema: bez tamnih površina — poruka je svetlo staklo sa plavom ivicom. */
+html:not([data-theme="dark"]) .lang-toast { background: var(--glass-fill-solid); color: var(--fg-strong); border-color: var(--glass-stroke); border-left-color: var(--accent); box-shadow: var(--glass-shadow-sm); }
+html:not([data-theme="dark"]) .lang-toast__x { color: var(--fg-muted); }
+html:not([data-theme="dark"]) .lang-toast__x:hover { color: var(--fg-strong); }
+@media (prefers-reduced-motion: reduce) {
+  .lang-toast { transition: none; transform: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Prekidač teme — sunce se preliva u mesec (modul theme() u js/main.js)
+   Sunce: malo jezgro + zraci. Mesec: veliko jezgro iz kog „isečeni“ krug
+   pravi srp. Sve su transformacije, pa radi u svim pregledačima.
+   -------------------------------------------------------------------------- */
+.themesw {
+  position: relative;
+  flex: none;
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--fg-strong);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.themesw:hover { border-color: var(--accent); color: var(--accent); }
+.themesw svg { width: 16px; height: 16px; overflow: visible; }
+/* Morf sunce → mesec: 200 ms */
+.themesw__core { transform-origin: 12px 12px; transform: scale(.56); transition: transform var(--dur-fast) var(--ease); }
+.themesw__cut  { transform: translate(9px, -9px); transition: transform var(--dur-fast) var(--ease); }
+.themesw__rays { transform-origin: 12px 12px; transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease); }
+.themesw[aria-pressed="true"] .themesw__core { transform: scale(1); }
+.themesw[aria-pressed="true"] .themesw__cut  { transform: translate(0, 0); }
+.themesw[aria-pressed="true"] .themesw__rays { transform: rotate(-60deg) scale(.4); opacity: 0; }
+
+.mnav__util { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
+
+.header__phone {
+  display: none;
+  margin-left: auto;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.header__phone:hover { color: var(--accent); border-color: var(--accent); }
+@media (min-width: 640px) and (max-width: 1439px) { .header__phone { display: block; } }
+/* Na uskim ekranima prekidač teme gura burger udesno. */
+@media (max-width: 639px) { .site-header .themesw { margin-left: auto; } }
+
+/* Burger */
+.burger {
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  position: relative;
+  flex: none;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.burger:hover { border-color: var(--accent); }
+@media (min-width: 1440px) { .burger { display: none; } }
+
+.burger i {
+  position: absolute;
+  left: 11px;
+  width: 16px; height: 1.5px;
+  background: var(--fg-strong);
+  transition: transform var(--dur) var(--ease), opacity var(--dur-fast), width var(--dur) var(--ease);
+}
+.burger i:nth-child(1) { transform: translateY(-4px); }
+.burger i:nth-child(2) { width: 11px; }
+.burger i:nth-child(3) { transform: translateY(4px); }
+.burger.is-open i:nth-child(1) { transform: rotate(45deg); }
+.burger.is-open i:nth-child(2) { opacity: 0; }
+.burger.is-open i:nth-child(3) { transform: rotate(-45deg); }
+
+/* --------------------------------------------------------------------------
+   Mobilni meni — puna površina u boji teme
+   -------------------------------------------------------------------------- */
+/* Stakleni list preko strane: dva sloja stakla (fill-2 preko fill) daju
+   dovoljno pokrivanja za velike stavke menija i preko tamnog hero-a. */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-header) - 1);
+  background-color: var(--glass-fill);
+  background-image: linear-gradient(var(--glass-fill-2), var(--glass-fill-2));
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  padding-top: var(--header-h);
+  overflow-y: auto;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--dur-slow) var(--ease);
+  visibility: hidden;
+}
+.mobile-nav.is-open { clip-path: inset(0 0 0 0); visibility: visible; }
+
+.mobile-nav__inner { padding: var(--sp-5) var(--gutter) var(--sp-9); }
+
+.mnav__group { border-top: 1px solid var(--line); }
+.mnav__group:last-of-type { border-bottom: 1px solid var(--line); }
+
+.mnav__link,
+.mnav__toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 17px 2px;
+  font-family: var(--ff-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--fg-strong);
+  text-align: left;
+  -webkit-mask-image: linear-gradient(90deg, #000 0 0); mask-image: linear-gradient(90deg, #000 0 0);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 0% 100%; mask-size: 0% 100%;
+  transition: color var(--dur-fast) var(--ease);
+}
+/* stavke se otvaraju istim rezom kao reveal */
+.mobile-nav.is-open .mnav__link,
+.mobile-nav.is-open .mnav__toggle {
+  animation: mnavIn var(--dur-slow) var(--ease) forwards;
+}
+@keyframes mnavIn { to { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; } }
+
+.mnav__link:hover, .mnav__toggle:hover { color: var(--accent); }
+.mnav__link[aria-current="page"] { color: var(--accent); }
+
+.mnav__toggle span.chev {
+  display: grid;
+  place-items: center;
+  width: 20px; height: 20px;
+  flex: none;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.mnav__toggle span.chev svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.mnav__toggle[aria-expanded="true"] span.chev { transform: rotate(180deg); }
+.mnav__toggle[data-current="true"] { color: var(--accent); }
+.mnav__sub a[aria-current="page"] { color: var(--accent); border-left-color: var(--accent); }
+
+.mnav__sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur) var(--ease);
+}
+.mnav__sub > div { overflow: hidden; }
+.mnav__toggle[aria-expanded="true"] + .mnav__sub { grid-template-rows: 1fr; }
+.mnav__sub a {
+  display: block;
+  padding: 11px 0 11px 18px;
+  font-size: var(--t-base);
+  color: var(--fg-muted);
+  border-left: 1px solid var(--line);
+  transition: all var(--dur-fast);
+}
+.mnav__sub a:hover { color: var(--accent); border-left-color: var(--accent); padding-left: 24px; }
+
+.mnav__foot {
+  margin-top: var(--sp-7);
+  display: grid;
+  gap: var(--sp-4);
+}
+.mnav__foot a { display: block; }
+.mnav__foot .mono { color: var(--fg-faint); }
+.mnav__foot .big {
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--fg-strong);
+  letter-spacing: 0;
+}
+
+/* ==========================================================================
+   HERO — tri ekrana (js/hero-slider.js), ista kompozicija na svakom
+
+   Slojevi odozdo: čista podloga strane (ista kao body, bez fotografije;
+   .hero__bg nosi samo perspektivnu mrežu poda u ::after) → vodeni žig
+   „TRICOM“ → 3D objekat ekrana sa kotama (js/hero3d.js) → staklena ploča
+   sa tekstom, pejdžer, strelice.
+   Kompozicija na 12 kolona:
+     gore levo   mono blok (stalan)
+     levo        oznaka ekrana, naslov u dva reza, rečenica, jedno obrisno dugme
+     sredina–desno  objekat ekrana, kote prate 3D tačke
+     dole levo   „SKROLUJTE“, desno od dugmeta i oblačića asistenta
+     desni žleb  pejdžer 01 — linija — 03, van kolone sadržaja
+   Sva tri ekrana stoje u istoj ćeliji mreže, pa promena ne pomera ništa
+   (CLS 0).
+   Prelaz: 600 ms, jedna kriva; izlaz 300 ms, ulaz 300 ms posle njega.
+   ========================================================================== */
+.hero {
+  --hero-dot: var(--arc);
+  --hero-hover: var(--arc);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--header-h);
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--cine-fg);
+  background: var(--cine-2);
+  border-bottom: 1px solid var(--cine-line);     /* donja hairline panela, vidljiva iznad razmaka do trake */
+}
+/* Svetla tema: hladan beton (#E6EAF0 gore → #F4F6F9 dole) i tamna slova.
+   Zrno je postojeći sloj .grain preko cele strane. Sto ispod objekta ostaje
+   tamna antracit ploča (kontrast objekta), hero3d.js menja samo svetlo. */
+html:not([data-theme="dark"]) .hero {
+  --cine-1:     #E6EAF0;
+  --cine-2:     #EDF0F4;
+  --cine-3:     #F4F6F9;
+  --cine-grid:  rgba(0, 0, 0, 0.07);
+  --cine-ghost: rgba(0, 0, 0, 0.05);
+  --cine-line:  rgba(10, 14, 20, 0.14);
+  --cine-fg:    #0A0E14;                   /* naslov, lista, dugme */
+  --cine-fg-70: rgba(10, 14, 20, 0.72);    /* rečenica: 7.2:1 na #E6EAF0 */
+  --cine-fg-60: rgba(10, 14, 20, 0.60);    /* mono oznake: 4.8:1 na #E6EAF0 */
+  --hero-dot:   var(--brand);
+  --hero-hover: var(--brand);
+}
+/* Traka preko svetlog hero-a početne nosi tamna slova (u tamnoj temi i na
+   podstranicama ostaje bela — zaglavlja podstranica su tamna u obe teme). */
+html:not([data-theme="dark"]) body:has(> main > .hero) .site-header.is-over {
+  --bg: inherit; --bg-elev: inherit; --surface: inherit; --surface-2: inherit; --surface-3: inherit;
+  --line: inherit; --line-strong: inherit; --fg: inherit; --fg-strong: inherit; --fg-muted: inherit; --fg-faint: inherit;
+  --accent: inherit; --accent-soft: inherit; --accent-line: inherit; --grid-line: inherit; --ghost: inherit;
+  --header-solid: inherit; --danger: inherit;
+  --cine-fg:    #0A0E14;
+  --cine-fg-70: rgba(10, 14, 20, 0.72);
+  --cine-line:  rgba(10, 14, 20, 0.16);
+}
+html:not([data-theme="dark"]) body:has(> main > .hero) .site-header.is-over .nav__link::after { background: var(--brand); }
+
+/* --- 1. pozadina teme + 3. perspektivna mreža poda ------------------------- */
+.hero__bg {
+  position: absolute; inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--cine-1) 0%, var(--cine-2) 52%, var(--cine-3) 100%);
+}
+.hero__bg::after {
+  content: '';
+  position: absolute;
+  left: -40%; right: -40%; bottom: 0;
+  height: 46%;
+  background-image:
+    linear-gradient(to right, var(--cine-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cine-grid) 1px, transparent 1px);
+  background-size: 96px 48px;
+  background-position: center bottom;
+  transform: perspective(520px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, .55) 45%, transparent 92%);
+          mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, .55) 45%, transparent 92%);
+}
+/* Horizont — samo u zaglavljima podstranica, tamo gde mreža poda počinje */
+.hero__horizon {
+  position: absolute; left: 0; right: 0; top: 78%;
+  height: 1px;
+  z-index: -1;
+  background: var(--cine-grid);
+  pointer-events: none;
+}
+
+/* --- 4. vodeni žig: 4 % bele (tamna) / 5 % crne (svetla), iznad fotografije -- */
+.hero__ghost {
+  position: absolute;
+  left: 0; right: 0; top: 26%;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+.hero__ghost span {
+  display: block;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: 26vw;
+  line-height: .8;
+  letter-spacing: -0.03em;
+  color: var(--cine-ghost);
+  white-space: nowrap;
+  transform: translate3d(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 6px), 0);
+}
+
+/* --- 5.–6. objekat ekrana na radnom stolu (pozicija u odnosu na .hero) ------- */
+.hero__obj {
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--header-h) + 2vh);
+  bottom: 12vh;
+  right: calc(max(0px, (100% - var(--maxw)) / 2) - var(--gutter));
+  width: min(66vw, 1040px);
+  pointer-events: none;
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 10px), 0);
+}
+.hero__obj .hero3d { width: 100%; height: 100%; }
+/* statične slike objekata: pretapaju se sa ekranom, novi raste 0,96 → 1 */
+.hero .hero3d__still {
+  display: block;
+  opacity: 0;
+  transform: scale(.96);
+  transform-origin: 50% 80%;
+  transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+}
+.hero .hero3d__still.is-on { opacity: 1; transform: none; animation: none; }
+.hero.is-boot .hero3d__still.is-on { animation: stillIn var(--dur) var(--ease) 300ms both; }
+.hero .hero3d__still:not(.is-on):not(.is-pre) { background-image: none !important; }
+.hero .hero3d.is-live .hero3d__still { display: none; }
+
+/* --- 7. sadržaj na 12 kolona (apsolutni delovi se mere od .hero) ------------- */
+.hero__in {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto 1fr auto;
+  column-gap: var(--col-gap);
+  padding-block: 32px 40px;
+}
+
+/* mono blokovi (gore levo, gore desno) — 11 px, 0.16em, jedna boja po temi */
+.hero__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: none;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  line-height: 1.75;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--cine-fg-60);
+}
+.hero__stack--tl { grid-column: 1 / span 4; grid-row: 1; align-self: start; }
+
+/* oznaka ekrana, naslov, rečenica, dugme — tri ekrana u istoj ćeliji */
+.hero__copy,
+.hero__stack--tl,
+.hero__scroll { position: relative; z-index: 1; }
+.hero__copy {
+  grid-column: 1 / span 6;
+  grid-row: 1 / span 3;          /* centriran po celoj visini; uglovi ga ne guraju */
+  align-self: center;
+  display: grid;
+  padding-block: 72px;
+  container-type: inline-size;
+}
+.hero__copy:focus-visible { outline-offset: 8px; }
+.hero__slide {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  visibility: hidden;
+  transition: visibility 0s linear 600ms;
+}
+.hero__slide.is-active { visibility: visible; transition-delay: 0s; }
+.hero__slide > :not(.hero__title) { opacity: 0; transition: opacity 300ms var(--ease); }
+.hero__slide.is-active > :not(.hero__title) { opacity: 1; transition-delay: 300ms; }
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: none;
+  margin-bottom: 24px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  line-height: 1.75;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--cine-fg-60);
+}
+.hero__eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hero-dot); flex: none; }
+.hero__ix { color: var(--cine-fg); font-variant-numeric: tabular-nums; }
+
+.hero__title {
+  display: block;
+  font-family: var(--ff-display);
+  /* 72–112 px; nikad šire od kolone (najduži red: „Sve za limara“, 6.15em) */
+  font-size: min(clamp(4.5rem, 1.6rem + 4.4vw, 7rem), 100cqi / 6.3);
+  font-weight: 800;
+  line-height: .95;
+  letter-spacing: -0.03em;
+  color: var(--cine-fg);
+  margin-bottom: 32px;
+  text-wrap: balance;
+  white-space: nowrap;
+}
+.hero__title .ln { display: block; overflow: hidden; padding-bottom: .04em; }
+.hero__title .ln:nth-child(2) { --k: 1; }
+.hero__title .ln:nth-child(3) { --k: 2; }
+.hero__title .lt { font-weight: 300; }
+/* mere u naslovu (main.js ih obeleži sa .num) ostaju u slovu naslova — dva reza, bez mono plave */
+.hero .hero__title .num { font: inherit; letter-spacing: inherit; word-spacing: normal; color: inherit; text-decoration: none; }
+/* linije izlaze i ulaze kroz masku, 60 ms razmaka: izlaz nagore, ulaz odozdo */
+.hero__title .ln > span {
+  display: block;
+  transform: translateY(105%);
+  transition: none;
+}
+.hero__slide.is-active .hero__title .ln > span {
+  transform: none;
+  transition: transform 300ms var(--ease) calc(180ms + var(--k, 0) * 60ms);
+}
+.hero__slide.is-leaving .hero__title .ln > span {
+  transform: translateY(-105%);
+  transition: transform 300ms var(--ease) calc(var(--k, 0) * 60ms);
+}
+
+.hero__sub {
+  max-width: 44ch;
+  font-size: var(--t-md);
+  line-height: 1.6;
+  color: var(--cine-fg-70);
+  margin-bottom: 40px;
+}
+/* dugme stoji na istom mestu na sva tri ekrana (dno ćelije) */
+.hero__cta { margin-top: auto; }
+/* Obrisno dugme (1 px, boja teksta panela); na hover se puni brend plavom. */
+.hero .hero__cta { --btn-fg: var(--cine-fg); border: 1px solid var(--cine-fg); }
+.hero .hero__cta::before { background: var(--brand); }
+.hero .hero__cta:hover { color: var(--brand-ink); border-color: var(--brand); }
+
+/* dole levo: „SKROLUJTE“ uz tanku liniju */
+.hero__scroll {
+  grid-column: 1 / span 6;
+  grid-row: 3;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: none;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--cine-fg-60);
+}
+/* počinje desno od dugmeta asistenta i njegovog oblačića (12 + 260 px) */
+@media (min-width: 769px) { .hero__scroll { padding-left: max(0px, calc(var(--dock-gap) + var(--dock-size) + 296px - max(var(--gutter), (100vw - 1440px) / 2))); } }
+.hero__scroll i { width: 40px; height: 1px; background: var(--cine-fg-60); }
+.hero__scroll svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- pejdžer: 01 — linija — 03 u desnom žlebu, van kolone sadržaja ---------- */
+.hero__pager {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: calc(max(var(--gutter), (100% - 1440px) / 2) / 2 - 8px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  color: var(--cine-fg-60);
+}
+.hero__pg-track { position: relative; display: flex; flex-direction: column; width: 1px; background: var(--cine-line); }
+.hero__pg { position: relative; width: 1px; height: 48px; }
+.hero__pg::before { content: ''; position: absolute; inset: 0 -12px; }   /* veća meta za klik */
+.hero__pg:focus-visible { outline-offset: 6px; }
+.hero__pg-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 1px; height: 48px;
+  background: var(--cine-fg);
+  transform: translateY(calc(var(--i, 0) * 48px));
+  transition: transform var(--dur-slow) var(--ease);
+  pointer-events: none;
+}
+.hero__pg-n { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.hero__pg-n.is-cur { color: var(--cine-fg); }
+
+/* --- strelice: na ivicama ekrana, u visini sredine objekta ------------------ */
+.hero__arrow { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 1060px) {
+  .hero__arrow {
+    position: absolute;
+    z-index: 4;
+    top: calc(var(--header-h) + 2vh + (100% - var(--header-h) - 14vh) / 2);
+    display: grid;
+    place-items: center;
+    width: 40px; height: 40px;
+    margin-top: -20px;
+    border: 1px solid var(--cine-line);
+    border-radius: 999px;
+    background: var(--cine-2);
+    color: var(--cine-fg);
+    /* skrivene providnošću (ne visibility), da ostanu dostupne tastaturi */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  }
+  .hero__arrow svg { width: 16px; height: 16px; }
+  .hero__arrow--prev { left: max(8px, calc(max(var(--gutter), (100% - 1440px) / 2) / 2 - 20px)); }
+  .hero__arrow--next { right: calc(max(var(--gutter), (100% - 1440px) / 2) / 2 + 20px); }
+  .hero__arrow:hover { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+  .hero.is-pointing .hero__arrow,
+  .hero__arrow:focus-visible { opacity: 1; pointer-events: auto; }
+}
+
+/* --- kote preko 3D objekta (crta ih js/hero3d.js) --------------------------- */
+.h3d-kote {
+  position: absolute; inset: 0;
+  z-index: 2;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.h3d-kote__ext, .h3d-kote__dim, .h3d-kote__tick {
+  fill: none;
+  stroke: var(--cine-fg-60);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-slow) var(--ease);
+}
+.h3d-kote__dim { stroke: var(--cine-fg); }
+.h3d-kote__t, .h3d-kote__n {
+  fill: var(--cine-fg);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  dominant-baseline: central;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease) var(--dur-slow);
+}
+/* oreol u boji panela: natpis se čita i preko tamnog stola u svetloj temi */
+.hero .h3d-kote__t, .hero .h3d-kote__n { paint-order: stroke fill; stroke: var(--cine-2); stroke-width: 3px; stroke-linejoin: round; }
+.h3d-kote__n { fill: var(--cine-fg-60); text-transform: uppercase; }
+.h3d-kote.is-in .h3d-kote__ext,
+.h3d-kote.is-in .h3d-kote__dim,
+.h3d-kote.is-in .h3d-kote__tick { stroke-dashoffset: 0; }
+.h3d-kote.is-in .h3d-kote__t,
+.h3d-kote.is-in .h3d-kote__n { opacity: 1; }
+.h3d-kote.is-off { visibility: hidden; }
+.h3d-kote.is-off * { transition: none; }
+
+/* --- ulaz pri učitavanju (ukupno < 1,2 s) ------------------------------------
+   0 ms mreža · 120 ms naslov (60 ms razmaka) · 300 ms objekat ·
+   500 ms kote (hero3d.js) · 700 ms mono oznake */
+.hero.is-boot .hero__slide.is-active .hero__title .ln > span {
+  transform: translateY(105%);
+  transition: none;
+  animation: lineUp var(--dur-slow) var(--ease) calc(120ms + var(--k, 0) * 60ms) forwards;
+}
+@keyframes lineUp { to { transform: translateY(0); } }
+.hero.is-boot .hero__slide.is-active > .hero__sub,
+.hero.is-boot .hero__slide.is-active > .hero__cta { transition: none; animation: heroIn var(--dur) var(--ease) 240ms both; }
+.hero.is-boot .hero__stack,
+.hero.is-boot .hero__slide.is-active > .hero__eyebrow,
+.hero.is-boot .hero__scroll,
+.hero.is-boot .hero__pager { transition: none; animation: heroIn var(--dur) var(--ease) 700ms both; }
+@keyframes heroIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- 769–1199 px: ista kompozicija, uža kolona naslova ---------------------- */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .hero__copy { grid-column: 1 / span 7; }
+  .hero__obj { width: 72vw; right: -10vw; }
+}
+
+/* --- telefon (≤ 768 px): oznaka, naslov, rečenica, dugme, objekat,
+   tačke umesto pejdžera; bez strelica (swipe) ------------------------------ */
+@media (max-width: 768px) {
+  .hero { min-height: 0; }
+  .hero__in {
+    display: flex;
+    flex-direction: column;
+    padding-block: 0 32px;
+  }
+  .hero__in > * { align-self: stretch; }
+  /* dva stalna reda (ne zavisi od toga da li je mono pismo već učitano — CLS 0) */
+  .hero__stack--tl { order: 1; flex-direction: row; flex-wrap: wrap; gap: 0 16px; padding-top: 24px; }
+  .hero__stack--tl span:first-child { flex-basis: 100%; }
+  .hero__copy { order: 2; padding-block: 24px 0; }
+  .hero__title { font-size: min(clamp(3rem, 13vw, 4.5rem), 100cqi / 6.3); margin-bottom: 24px; }
+  .hero__sub { font-size: var(--t-base); margin-bottom: 32px; }
+  .hero__obj {
+    order: 3;
+    position: relative;
+    top: auto; bottom: auto; right: auto;
+    align-self: center;
+    width: 136vw;
+    height: 86vw;
+    max-height: 600px;
+    margin-top: 8px;
+    transform: none;
+  }
+  .hero__in > .hero__obj { display: block; }
+  .hero__scroll { display: none; }
+  .hero__pager {
+    order: 5;
+    position: relative;
+    top: auto; right: auto;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  .hero__pg-n { display: none; }
+  .hero__pg-track { flex-direction: row; width: auto; background: none; gap: 4px; }
+  .hero__pg { width: 24px; height: 24px; }
+  .hero__pg::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--cine-line); transition: background-color var(--dur-fast) var(--ease); }
+  .hero__pg[aria-current="true"]::before { background: var(--cine-fg); }
+  .hero__pg-bar { display: none; }
+  .hero__ghost { top: 40%; }
+  .hero__ghost span { font-size: 34vw; }
+}
+
+@media (min-width: 769px) and (max-height: 820px) {
+  .hero__title { font-size: min(clamp(4.5rem, 12vh, 6rem), 100cqi / 6.3); margin-bottom: 24px; }
+  .hero__sub { margin-bottom: 32px; }
+  .hero__copy { padding-block: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__title .ln > span,
+  .hero.is-boot .hero__slide.is-active .hero__title .ln > span { animation: none; transition: none; }
+  .hero__slide.is-active .hero__title .ln > span { transform: none; }
+  .hero__slide > *, .hero .hero3d__still, .hero__pg-bar { transition: none !important; animation: none !important; }
+  .hero__ghost span, .hero__obj { transform: none; }
+  .h3d-kote__ext, .h3d-kote__dim, .h3d-kote__tick { transition: none; stroke-dashoffset: 0; }
+  .h3d-kote__t, .h3d-kote__n { transition: none; opacity: 1; }
+}
+
+/* štampa: samo aktivni ekran, bez strelica i pejdžera */
+@media print {
+  .hero__arrow, .hero__pager { display: none !important; }
+  .hero__slide:not(.is-active) { display: none !important; }
+}
+
+/* ==========================================================================
+   3D objekat (js/hero3d.js): platno preko statične slike iste scene.
+   Statična slika se uvek prikazuje prva (i ostaje kao jedini prikaz uz
+   prefers-reduced-motion, hardwareConcurrency <= 4 i širinu < 768 px).
+   ========================================================================== */
+.hero3d { position: relative; }
+.hero3d canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.hero3d.is-live canvas { opacity: 1; }
+.hero3d.is-swap canvas { opacity: 0; }
+.hero3d__still {
+  position: absolute; inset: 0;
+  display: none;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+}
+.hero3d__still.is-on { display: block; animation: stillIn var(--dur-slow) var(--ease) both; }
+.hero3d.is-live .hero3d__still { display: none; }
+@keyframes stillIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Zaglavlja podstranica su tamna u obe teme — slike su samo tamne. */
+.hero3d__still[data-obj="roof"]   { background-image: url('../assets/hero/roof-dark.webp?v=2026-10-26'); }
+.hero3d__still[data-obj="plate"]  { background-image: url('../assets/hero/plate-dark.webp?v=2026-10-26'); }
+.hero3d__still[data-obj="coil"]   { background-image: url('../assets/hero/coil-dark.webp?v=2026-10-26'); }
+.hero3d__still[data-obj="gutter"] { background-image: url('../assets/hero/gutter-dark.webp?v=2026-10-26'); }
+
+/* Hero početne: objekat na radnom stolu, slika po temi (sto je tamna ploča u obe) */
+.hero .hero3d__still[data-obj="sheet"]    { background-image: url('../assets/hero/bed-sheet-dark.webp?v=2026-10-26'); }
+.hero .hero3d__still[data-obj="cutplate"] { background-image: url('../assets/hero/bed-cutplate-dark.webp?v=2026-10-26'); }
+.hero .hero3d__still[data-obj="stack"]    { background-image: url('../assets/hero/bed-stack-dark.webp?v=2026-10-26'); }
+html:not([data-theme="dark"]) .hero .hero3d__still[data-obj="sheet"]    { background-image: url('../assets/hero/bed-sheet-light.webp?v=2026-10-26'); }
+html:not([data-theme="dark"]) .hero .hero3d__still[data-obj="cutplate"] { background-image: url('../assets/hero/bed-cutplate-light.webp?v=2026-10-26'); }
+html:not([data-theme="dark"]) .hero .hero3d__still[data-obj="stack"]    { background-image: url('../assets/hero/bed-stack-light.webp?v=2026-10-26'); }
+
+/* ==========================================================================
+   Zaglavlje podstranice — isti tamni „cinema“ panel kao hero početne, kraći
+   (56svh): plate preliv i perspektivna mreža poda (.hero__bg), vodeni žig sa
+   imenom strane (4% bele), naslov u dva reza, mono putanja, a desno mali 3D
+   objekat ili tonirana fotografija. Tamno je u obe teme (tokeni u base.css).
+   ========================================================================== */
+/* Forged Glass: ispod zaglavlja je brušeni čelik (--bg-brushed, tamna slika u
+   obe teme) pod vinjetom, ispod njega plate preliv — kad slika ne postoji,
+   ostaje preliv. */
+.pagehead {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: max(420px, 56svh);
+  padding-top: calc(var(--header-h) + 48px);
+  padding-bottom: 48px;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--cine-fg);
+  --bd-op: .18;
+  --bg-rgb: 11, 14, 19;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 60% 45%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-brushed),
+    linear-gradient(180deg, var(--cine-1) 0%, var(--cine-2) 55%, var(--cine-3) 100%);
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+.pagehead > .hero__bg::after { height: 34%; }
+/* .tex-grid nosi nacrtnu mrežu; u zaglavlju je samo blaga, uz levi rub. */
+.pagehead.tex-grid::before {
+  z-index: -1;
+  -webkit-mask-image: radial-gradient(ellipse 60% 80% at 18% 60%, #000 10%, transparent 70%);
+          mask-image: radial-gradient(ellipse 60% 80% at 18% 60%, #000 10%, transparent 70%);
+}
+.pagehead .wrap { width: 100%; position: relative; z-index: 2; }
+/* Jedan stubac: značka ide ispod uvoda, desna polovina pripada objektu/fotografiji. */
+.pagehead .split { grid-template-columns: minmax(0, 1fr); align-items: end; gap: var(--sp-5); max-width: 52rem; }
+.pagehead .split > * { grid-column: 1 / -1; padding-right: 0; }
+@media (min-width: 960px) { .pagehead .split { max-width: min(54vw, 52rem); } }
+.pagehead h1 {
+  font-size: clamp(2.5rem, 1.1rem + 4.6vw, 5.25rem);
+  line-height: .95;
+  letter-spacing: -0.03em;
+  color: var(--cine-fg);
+  max-width: 15ch;
+  margin-bottom: var(--sp-5);
+}
+.pagehead h1 .lt { font-weight: 300; opacity: 1; }
+.pagehead .lead { max-width: 56ch; color: var(--cine-fg-70); }
+.pagehead .crumbs { margin-bottom: var(--sp-5); }
+.pagehead .badge { border-color: var(--cine-line); color: var(--cine-fg); background: transparent; }
+
+/* Vodeni žig sa imenom strane */
+.pagehead__ghost {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(var(--header-h) + 1vh);
+  z-index: -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 2vw;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.pagehead__ghost span {
+  display: block;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: clamp(6rem, 19vw, 22rem);
+  line-height: .8;
+  letter-spacing: -0.03em;
+  color: var(--cine-ghost);
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Desna strana: mali 3D objekat ili tonirana fotografija */
+.pagehead__media {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  top: var(--header-h);
+  bottom: 0;
+  width: min(48vw, 760px);
+  pointer-events: none;
+}
+.pagehead__media .hero3d { position: absolute; inset: 6% 4% 6% 0; }
+/* Kapsula: .pagehead__media.shape-a (ili .shape-b/.shape-c) postaje
+   ograničen okvir sa tamnom pločom, u koji strane stavljaju render
+   (<picture>/<img> popunjava okvir). Bez oblika ponašanje je kao ranije. */
+.pagehead__media.shape-a, .pagehead__media.shape-b, .pagehead__media.shape-c {
+  top: calc(var(--header-h) + 28px);
+  bottom: 28px;
+  right: max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter)));
+  width: min(42vw, 680px);
+  background: var(--cine-1);
+  box-shadow: var(--glass-shadow);
+}
+.pagehead__media.shape-a > img, .pagehead__media.shape-b > img, .pagehead__media.shape-c > img,
+.pagehead__media.shape-a > picture, .pagehead__media.shape-b > picture, .pagehead__media.shape-c > picture { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pagehead__media picture img { width: 100%; height: 100%; object-fit: cover; }
+/* Rezervna ploča (dok strana ne zameni fotografiju renderom): isti brušeni
+   čelik kao pozadina zaglavlja, jače, maskiran ka tekstu. Fotografije
+   tricom-1/2/3 više ne postoje ni u jednom pravilu. */
+.pagehead__photo {
+  position: absolute; inset: 0;
+  background-color: var(--cine-1);
+  background-image: var(--bg-brushed), linear-gradient(100deg, var(--cine-1) 0%, #1C222C 48%, var(--cine-2) 100%);
+  background-size: cover, cover;
+  background-position: center;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+          mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+  opacity: .5;
+}
+.pagehead__photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--photo-tint);
+  mix-blend-mode: var(--photo-tint-blend);
+}
+/* Tekst stoji levo; ispod 960 px objekat/foto ide iza teksta, prigušen. */
+@media (max-width: 959px) {
+  .pagehead { min-height: max(400px, 56svh); }
+  .pagehead__media { width: 100%; opacity: .22; }
+  .pagehead__media.shape-a, .pagehead__media.shape-b, .pagehead__media.shape-c { width: 100%; right: 0; top: var(--header-h); bottom: 0; box-shadow: none; border-radius: 0; }
+  .pagehead__media .hero3d { inset: 10% -10% 30% 30%; }
+  .pagehead__photo { -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent 90%); mask-image: linear-gradient(180deg, #000 20%, transparent 90%); }
+  .pagehead__ghost { justify-content: flex-start; padding-left: 2vw; }
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--cine-fg-60);
+  margin-bottom: var(--sp-4);
+}
+.crumbs a { color: var(--cine-fg-60); transition: color var(--dur-fast) var(--ease); }
+.crumbs a:hover { color: var(--cine-fg); }
+.crumbs span.sep { color: var(--cine-fg-60); }
+.crumbs [aria-current] { color: var(--cine-fg); }
+
+/* 404 — prazno stanje: isti zid, vodeni žig „404“ */
+.emptyhead {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: max(480px, 70svh);
+  display: flex;
+  align-items: center;
+  color: var(--cine-fg);
+  background: var(--cine-2);
+  padding-top: calc(var(--header-h) + var(--sp-6));
+}
+.emptyhead > .wrap { width: 100%; position: relative; z-index: 1; }
+
+/* --------------------------------------------------------------------------
+   Footer — tamna površina u tamnoj temi; u svetloj leži na podlozi strane
+   (staklene kolone, hairline na vrhu). Boje teksta su lokalni tokeni --ft-*
+   (svetle vrednosti ovde, tamne u bloku tamne teme ispod).
+   -------------------------------------------------------------------------- */
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  --ft-ink:   var(--fg-muted);      /* veze, rečenice: 7.9:1 na podlozi */
+  --ft-ink-2: var(--fg-faint);      /* sporedno (opis, dno) */
+  --ft-ink-3: var(--fg-muted);      /* status radnog vremena */
+  --ft-head:  var(--fg-strong);     /* naslov poziva */
+  --ft-hi:    var(--accent);        /* naslovi kolona, hover */
+  --ft-ok:    #17733F;              /* „otvoreno“ */
+}
+/* Forged Glass: futer leži na lomljenom čeliku (tamna slika, 18 % pod
+   vinjetom, preliv ispod kad slike nema) — samo u tamnoj temi. */
+:where(html[data-theme="dark"]) .site-footer {
+  --ft-ink:   var(--steel-300);
+  --ft-ink-2: var(--steel-400);
+  --ft-ink-3: var(--steel-200);
+  --ft-head:  var(--white);
+  --ft-hi:    var(--arc);
+  --ft-ok:    var(--ok-ink);
+  --bd-op: .18;
+  background-color: var(--plate-950);
+  background-image:
+    radial-gradient(ellipse 90% 90% at 50% 30%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(180deg, #171C25 0%, var(--plate-950) 60%, var(--cine-3) 100%);
+  background-size: cover, cover, cover;
+  background-position: center top, center top, center;
+  background-repeat: no-repeat;
+}
+html[data-theme="dark"] .site-footer { background-color: var(--cine-3); border-top: 1px solid var(--line); }
+
+/* Tipografski vodeni žig „TRICOM“ — samo obris, ne menja kontrast teksta. */
+.site-footer::after {
+  content: 'TRICOM';
+  position: absolute;
+  left: 50%;
+  bottom: -0.14em;
+  transform: translateX(-50%);
+  z-index: 0;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: clamp(9rem, 20vw, 19rem);
+  line-height: .78;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--cine-ghost);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 899px) { .site-footer::after { content: none; } }
+
+.footer__lines, .footer__main, .footer__bottom { position: relative; z-index: 1; }
+
+/* Tanak gornji red: tri delatnosti kao kolone */
+.footer__lines {
+  display: grid;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 760px) { .footer__lines { grid-template-columns: repeat(3, 1fr); } }
+.fline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  transition: color var(--dur-fast);
+}
+.fline:last-child { border-bottom: 0; }
+@media (min-width: 760px) {
+  .fline { border-bottom: 0; border-left: 1px solid var(--line); padding: 20px 22px; }
+  .fline:first-child { border-left: 0; padding-left: 0; }
+}
+.fline .label { color: var(--fg-faint); flex: none; }
+.fline b { font-family: var(--ff-display); font-weight: 600; font-size: var(--t-base); letter-spacing: 0; color: inherit; flex: 1; }
+.fline svg { width: 16px; height: 16px; stroke-width: 1.5; flex: none; color: var(--fg-faint); transition: transform var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+.fline:hover { color: var(--ft-hi); }
+.fline:hover svg { transform: translateX(4px); color: var(--ft-hi); }
+
+/* Poziv na akciju iznad kolona futera — fotografija, toniranje, mreža */
+.footer__cta {
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+}
+.footer__cta::before,
+.footer__cta::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+/* Pojas poziva: isti lomljeni čelik, jači (30 %) i sa svetlom sa desne strane
+   — bez fotografije; samo u tamnoj temi (svetla: podloga strane + mreža). */
+:where(html[data-theme="dark"]) .footer__cta::before {
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--cine-2) 92%, transparent) 0%, color-mix(in srgb, var(--cine-2) 78%, transparent) 40%, color-mix(in srgb, var(--cine-2) 58%, transparent) 74%, color-mix(in srgb, var(--cine-2) 66%, transparent) 100%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cine-2) 40%, transparent) 0%, color-mix(in srgb, var(--cine-2) 20%, transparent) 38%, color-mix(in srgb, var(--cine-2) 70%, transparent) 100%),
+    var(--bg-steel),
+    linear-gradient(118deg, #2A3140 0%, #4B5563 46%, #1F2530 100%);
+  background-size: cover;
+  background-position: center 32%;
+  background-repeat: no-repeat;
+}
+.footer__cta::after {
+  pointer-events: none;
+  border-bottom: 1px solid var(--line);
+  background-image:
+    linear-gradient(to right, var(--cine-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cine-grid) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 90% at 18% 50%, #000 10%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 90% at 18% 50%, #000 10%, transparent 78%);
+}
+@media (max-width: 960px) {
+  :where(html[data-theme="dark"]) .footer__cta::before {
+    background-image:
+      linear-gradient(90deg, color-mix(in srgb, var(--cine-2) 88%, transparent) 0%, color-mix(in srgb, var(--cine-2) 80%, transparent) 100%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--cine-2) 45%, transparent) 0%, color-mix(in srgb, var(--cine-2) 70%, transparent) 100%),
+      var(--bg-steel),
+      linear-gradient(118deg, #2A3140 0%, #4B5563 46%, #1F2530 100%);
+  }
+}
+.footer__cta h2 {
+  font-size: var(--t-3xl);
+  color: var(--ft-head);
+  max-width: 16ch;
+  margin-bottom: var(--sp-4);
+}
+
+/* Datasheet blok futera = staklena ploča (recept .g-card) uvučena za žleb. */
+.footer__main {
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--maxw) - 2 * var(--gutter));
+  margin-block: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.75rem, 3.4vw, 3rem) clamp(1.25rem, 3vw, 2.75rem);
+  display: grid;
+  gap: var(--sp-7);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  isolation: isolate;
+}
+/* ista 12-kolonska mreža: 6+6 / 6+6 na tabletu, 4 · 3 · 2 · 3 na desktopu */
+@media (min-width: 760px) {
+  .footer__main { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
+  .footer__main > .footer__col { grid-column: span 6; }
+}
+@media (min-width: 1100px) {
+  .footer__main > .footer__col:nth-child(1) { grid-column: 1 / span 4; }
+  .footer__main > .footer__col:nth-child(2) { grid-column: 5 / span 3; }
+  .footer__main > .footer__col:nth-child(3) { grid-column: 8 / span 2; }
+  .footer__main > .footer__col:nth-child(4) { grid-column: 10 / span 3; }
+}
+
+.footer__col h4 {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ft-hi);
+  margin-bottom: var(--sp-4);
+}
+.footer__col li + li { margin-top: 9px; }
+.footer__col a {
+  font-size: var(--t-sm);
+  color: var(--ft-ink);
+  transition: color var(--dur-fast), padding-left var(--dur-fast);
+  display: inline-block;
+}
+.footer__col a:hover { color: var(--ft-hi); padding-left: 5px; }
+
+.footer__brand img { height: 56px; width: auto; margin-bottom: var(--sp-5); }
+.footer__brand p { font-size: var(--t-sm); color: var(--ft-ink-2); max-width: 34ch; }
+
+/* Kontakt kolona futera kao datasheet (PRODAJA / DIREKCIJA / E-POŠTA /
+   RADNO VREME / PIB); red „RADNO VREME“ nosi živi status (modul 25). */
+.fsheet { border-top: 1px solid var(--line); }
+.fsheet__r {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.fsheet dt {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--fg-faint);
+}
+.fsheet dd {
+  font-size: var(--t-sm);
+  color: var(--ft-ink);
+  line-height: 1.6;
+}
+.fsheet dd a { transition: color var(--dur-fast); }
+.fsheet dd a:hover { color: var(--ft-hi); }
+
+/* Živi status radnog vremena — statična tačka, bez pulsiranja */
+.fhours {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-left: 7px;
+  padding: 2px 8px;
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-fill-2);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  border-radius: var(--r-pill);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ft-ink-3);
+  white-space: nowrap;
+}
+.fhours:not(:empty) { display: inline-flex; }
+.fhours__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--steel-400);
+  flex: none;
+}
+.fhours.is-open { color: var(--ft-ok); border-color: var(--ok-line); }
+.fhours.is-open .fhours__dot { background: var(--ok); }
+
+.footer__bottom {
+  border-top: 1px solid var(--line);
+  padding-block: var(--sp-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ft-ink-2);
+  font-family: var(--ff-mono);
+}
+.footer__bottom a { color: var(--ft-ink); }
+.footer__bottom a:hover { color: var(--ft-hi); }
+.footer__bottom .made { letter-spacing: .04em; }
+
+.social { display: flex; gap: 8px; }
+.social a {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--ft-ink);
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.social a:hover {
+  color: var(--ft-head);
+  border-color: var(--ft-hi);
+  padding-left: 0;
+}
+.social svg { width: 16px; height: 16px; stroke-width: 1.5; }
+
+/* --------------------------------------------------------------------------
+   Custom kursor (samo desktop, fine pointer)
+   -------------------------------------------------------------------------- */
+.cursor, .cursor-dot { display: none; }
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1060px) {
+  /* Nišan je providan dok pokazivač nije nad interaktivnim elementom
+     (stanje .is-hot / .is-zoom iz js/main.js) — van veza, dugmadi i polja
+     nema nikakvog dodatnog kursora, pa ni u hero-u. */
+  .cursor {
+    display: block;
+    position: fixed;
+    top: 0; left: 0;
+    width: 34px; height: 34px;
+    margin: -17px 0 0 -17px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: var(--z-overlay);
+    opacity: 0;
+    transition: width var(--dur-fast) var(--ease), height var(--dur-fast) var(--ease),
+                margin var(--dur-fast) var(--ease), background var(--dur-fast), border-color var(--dur-fast), opacity var(--dur-fast);
+    will-change: transform;
+  }
+  .cursor.is-hot, .cursor.is-zoom { opacity: 1; }
+  .cursor::before, .cursor::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    opacity: .7;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .cursor::before { left: 50%; top: -7px; bottom: -7px; width: 1px; }
+  .cursor::after { top: 50%; left: -7px; right: -7px; height: 1px; }
+
+  /* Stanja i natpisi nišana (modul kursora u js/main.js):
+       .is-hot   veza / dugme / polje — prsten se skupi i postane pun
+       .is-zoom  pločica galerije     — natpis „UVEĆAJ“ */
+  .cursor__lbl {
+    position: absolute;
+    left: 50%; top: calc(100% + 9px);
+    transform: translateX(-50%);
+    padding: 3px 8px;
+    background: var(--plate-900);
+    border: 1px solid var(--cine-line);
+    border-radius: var(--r-pill);
+    color: var(--cine-fg);
+    font-family: var(--ff-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--track-label);
+  text-transform: uppercase;
+    line-height: 1.5;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease);
+  }
+  .cursor.is-zoom .cursor__lbl { opacity: 1; }
+  /* Svetla tema: bez tamnih površina — natpis nišana na svetlom staklu. */
+  html:not([data-theme="dark"]) .cursor__lbl { background: var(--glass-fill-solid); border-color: var(--glass-stroke); color: var(--fg-strong); }
+
+  .cursor.is-hot {
+    width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .cursor.is-hot::before, .cursor.is-hot::after { opacity: 0; }
+
+  .cursor.is-zoom { width: 54px; height: 54px; margin: -27px 0 0 -27px; }
+
+  .cursor-dot {
+    display: block;
+    position: fixed;
+    top: 0; left: 0;
+    width: 4px; height: 4px;
+    margin: -2px 0 0 -2px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: var(--z-overlay);
+    opacity: 0;
+    transition: opacity var(--dur-fast);
+    will-change: transform;
+  }
+  .cursor-dot.is-on { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor, .cursor-dot { display: none !important; }
+}

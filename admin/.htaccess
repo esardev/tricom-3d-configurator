@@ -1,0 +1,6 @@
+# TRICOM — admin/: administracija (PHP). Ne indeksira se.
+DirectoryIndex index.php
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>

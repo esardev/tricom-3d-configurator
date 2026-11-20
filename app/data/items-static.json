@@ -1,0 +1,572 @@
+{
+ "groups": [
+  {
+   "slug": "limovi",
+   "kind": "group",
+   "cat": "limovi",
+   "img": "sheet-stack",
+   "page": "proizvodi.html#limovi",
+   "rel": [
+    "secenje-makazama",
+    "slitovanje",
+    "secenje-cnc-plazma"
+   ],
+   "sr": {
+    "t": "Limovi u tablama i koturu",
+    "sum": "Pocinkovani, aluminijumski, bakarni, crni toplo- i hladnovaljani, plastificirani po RAL karti i prohromski limovi.",
+    "desc": [
+     "Osnovni materijal za svaki limarski posao. Držimo pocinkovane, aluminijumske, bakarne, crne toplo- i hladnovaljane, plastificirane po RAL karti i prohromske limove.",
+     "Pocinkovani lim svih formata, 0,4–2 mm, toplocinkovan 140, 200 i 275 g/m². Konfekcioniramo ga u svim oblicima za dalju doradu: sečenje iz kotura na potrebnu dužinu, sečenje table na meru, slitovanje."
+    ],
+    "specs": [
+     [
+      "Vrste",
+      "pocinkovani, alu, bakar, HVL, TVL, bojeni, inox"
+     ],
+     [
+      "Pocinkovani",
+      "0,4–2 mm; 140, 200, 275 g/m²"
+     ],
+     [
+      "Sečenje",
+      "makaze do 13 mm, inox do 9 mm"
+     ],
+     [
+      "Slitovanje",
+      "kotur do 1260 mm"
+     ]
+    ],
+    "tags": [
+     "pocinkovani",
+     "aluminijumski",
+     "bakarni",
+     "inox"
+    ],
+    "apps": [
+     "krov, oluci, galanterija, opšivke",
+     "fasade",
+     "konstrukcije i mašinska obrada"
+    ]
+   },
+   "en": {
+    "t": "Sheet metal in sheets and coils",
+    "sum": "Galvanised, aluminium, copper, black hot- and cold-rolled, pre-painted (RAL) and stainless steel sheet.",
+    "desc": [
+     "The basic material for any sheet-metal job. We stock galvanised, aluminium, copper, black hot- and cold-rolled, pre-painted (RAL colour chart) and stainless steel sheet.",
+     "Galvanised sheet in all formats, 0.4–2 mm, hot-dip galvanised 140, 200 and 275 g/m². We prepare it in any form for further processing: cutting from coil to the required length, cutting sheets to size, slitting."
+    ],
+    "specs": [
+     [
+      "Types",
+      "galvanised, aluminium, copper, CR, HR, pre-painted, stainless"
+     ],
+     [
+      "Galvanised",
+      "0.4–2 mm; 140, 200, 275 g/m²"
+     ],
+     [
+      "Cutting",
+      "guillotine up to 13 mm, stainless up to 9 mm"
+     ],
+     [
+      "Slitting",
+      "coil up to 1,260 mm"
+     ]
+    ],
+    "tags": [
+     "galvanised",
+     "aluminium",
+     "copper",
+     "stainless steel"
+    ],
+    "apps": [
+     "roofing, gutters, accessories, flashings",
+     "façades",
+     "structures and machining"
+    ]
+   }
+  },
+  {
+   "slug": "cevi-i-zp-profili",
+   "kind": "group",
+   "cat": "cevi",
+   "img": "tubes",
+   "page": "proizvodi.html#cevi",
+   "rel": [
+    "kvadratne-i-pravougaone-cevi",
+    "okrugle-cevi",
+    "precizne-cevi",
+    "secenje-profila"
+   ],
+   "sr": {
+    "t": "Cevi i ZP profili",
+    "sum": "Kvadratne, pravougaone, colovne, precizne i grifovane cevi — sečene na meru.",
+    "desc": [
+     "Šavne i precizne cevi i hladno oblikovani ZP profili. Sečemo ih na trakastim testerama na dužinu koju tražite, a šipkaste profile po potrebi i grifujemo."
+    ],
+    "specs": [
+     [
+      "Program",
+      "kvadratne, pravougaone, colovne, precizne, grifovane"
+     ],
+     [
+      "Sečenje",
+      "trakasta testera, do 60°"
+     ],
+     [
+      "Dorada",
+      "grifovanje, lučno savijanje"
+     ]
+    ],
+    "tags": [
+     "kvadratne",
+     "pravougaone",
+     "colovne",
+     "precizne"
+    ],
+    "apps": [
+     "konstrukcije",
+     "ograde i kapije",
+     "instalacije"
+    ]
+   },
+   "en": {
+    "t": "Tubes and hollow sections",
+    "sum": "Square, rectangular, inch-size, precision and embossed tubes — cut to size.",
+    "desc": [
+     "Welded and precision tubes and cold-formed ZP hollow sections. We cut them to the length you need on band saws, and emboss bar sections on request."
+    ],
+    "specs": [
+     [
+      "Range",
+      "square, rectangular, inch-size, precision, embossed"
+     ],
+     [
+      "Cutting",
+      "band saw, up to 60°"
+     ],
+     [
+      "Finishing",
+      "embossing, arc bending"
+     ]
+    ],
+    "tags": [
+     "square",
+     "rectangular",
+     "inch-size",
+     "precision"
+    ],
+    "apps": [
+     "structures",
+     "fences and gates",
+     "building services"
+    ]
+   }
+  },
+  {
+   "slug": "celicni-profili",
+   "kind": "group",
+   "cat": "cevi",
+   "img": "sections",
+   "page": "proizvodi.html#cevi",
+   "rel": [
+    "secenje-profila",
+    "grifovanje",
+    "cevi-i-zp-profili"
+   ],
+   "sr": {
+    "t": "Čelični profili",
+    "sum": "Flah, ugaonik, U i I profil, kvadratni pun — sečeni na dužinu koju tražite.",
+    "desc": [
+     "Standardni čelični profili: flah, ugaonici, U i I profili i puni kvadratni profili. Trakastim testerama ih sečemo na dužinu koju tražite — pa ne plaćate ostatak šipke koji vam ne treba; flah i kvadrat po potrebi grifujemo."
+    ],
+    "specs": [
+     [
+      "Program",
+      "flah, ugaonik, U, I, kvadratni pun"
+     ],
+     [
+      "Sečenje",
+      "pojedinačno ili u snopu, do 60°"
+     ],
+     [
+      "Dorada",
+      "grifovanje, peglanje flaha"
+     ]
+    ],
+    "tags": [
+     "flah",
+     "ugaonik",
+     "U profil",
+     "I profil"
+    ],
+    "apps": [
+     "metalne konstrukcije",
+     "kovane ograde i kapije"
+    ]
+   },
+   "en": {
+    "t": "Steel sections",
+    "sum": "Flat bar, angle, channel, I-beam and solid square bar — cut to the length you need.",
+    "desc": [
+     "Standard steel sections: flat bar, angles, channels, I-sections and solid square bar. We cut them on band saws to the length you ask for — so you do not pay for the rest of the bar you do not need; flat and square bar can be embossed on request."
+    ],
+    "specs": [
+     [
+      "Range",
+      "flat bar, angle, channel, I-beam, solid square"
+     ],
+     [
+      "Cutting",
+      "single or bundle, up to 60°"
+     ],
+     [
+      "Finishing",
+      "embossing, flat bar straightening"
+     ]
+    ],
+    "tags": [
+     "flat bar",
+     "angle",
+     "channel",
+     "I-beam"
+    ],
+    "apps": [
+     "steel structures",
+     "wrought-iron fences and gates"
+    ]
+   }
+  },
+  {
+   "slug": "alati-okov-oprema",
+   "kind": "group",
+   "cat": "alati",
+   "svg": "alati",
+   "page": "proizvodi.html#alati",
+   "rel": [
+    "elektricni-i-rucni-alat",
+    "oprema-za-varenje",
+    "srafovska-roba-i-okov",
+    "merdevine-i-pomocna-oprema"
+   ],
+   "sr": {
+    "t": "Alati, okov i oprema",
+    "sum": "Električni i ručni alat vodećih brendova, oprema za varenje Varstroj i kompletna šrafovska roba.",
+    "desc": [
+     "Ideja je da limar i bravar u jednoj kupovini uzmu i materijal i sve što treba da se on ugradi. Držimo električni i ručni alat vodećih brendova, opremu za varenje i kompletnu šrafovsku robu."
+    ],
+    "specs": [
+     [
+      "Alat",
+      "Bosch, Makita, DeWalt"
+     ],
+     [
+      "Varenje",
+      "Varstroj"
+     ],
+     [
+      "Okov",
+      "Bane Sekulić, PETITI, FIMET, HOPE"
+     ],
+     [
+      "Merdevine",
+      "Alpos"
+     ]
+    ],
+    "tags": [
+     "Bosch",
+     "Makita",
+     "DeWalt",
+     "Varstroj"
+    ],
+    "apps": [
+     "limarske radionice",
+     "bravarija",
+     "gradilište"
+    ]
+   },
+   "en": {
+    "t": "Tools, hardware and equipment",
+    "sum": "Power and hand tools from leading brands, Varstroj welding equipment and a complete range of fasteners.",
+    "desc": [
+     "The idea is that a sheet-metal worker or metal fabricator gets the material and everything needed to install it in a single purchase. We stock power and hand tools from leading brands, welding equipment and a complete range of fasteners."
+    ],
+    "specs": [
+     [
+      "Tools",
+      "Bosch, Makita, DeWalt"
+     ],
+     [
+      "Welding",
+      "Varstroj"
+     ],
+     [
+      "Hardware",
+      "Bane Sekulić, PETITI, FIMET, HOPE"
+     ],
+     [
+      "Ladders",
+      "Alpos"
+     ]
+    ],
+    "tags": [
+     "Bosch",
+     "Makita",
+     "DeWalt",
+     "Varstroj"
+    ],
+    "apps": [
+     "sheet-metal workshops",
+     "metal fabrication",
+     "building sites"
+    ]
+   }
+  },
+  {
+   "slug": "usluge-obrade",
+   "kind": "group",
+   "cat": "usluge",
+   "img": "plasma-plate",
+   "page": "usluge.html",
+   "rel": [
+    "secenje-cnc-plazma",
+    "secenje-makazama",
+    "savijanje-limova",
+    "slitovanje"
+   ],
+   "sr": {
+    "t": "Usluge obrade",
+    "sum": "Sečenje na CNC plazmi i makazama, gasno rezanje, slitovanje, savijanje, rundovanje, probijanje i sečenje profila.",
+    "desc": [
+     "Sečenje na CNC plazmi i makazama, gasno rezanje, slitovanje i premotavanje kotura, savijanje i rundovanje, probijanje i isecanje uglova, sečenje profila na trakastim testerama.",
+     "Materijal možete kupiti u fabričkom pakovanju ili ga uzeti obrađenog — sve operacije radimo na svojim mašinama u Batajnici i Ugrinovcima."
+    ],
+    "specs": [
+     [
+      "Usluga",
+      "14 vrsta obrade"
+     ],
+     [
+      "Plazma / gas",
+      "do 30 / do 150 mm"
+     ],
+     [
+      "Apkant presa",
+      "8,2 m"
+     ],
+     [
+      "Slitovanje",
+      "kotur do 1260 mm"
+     ]
+    ],
+    "tags": [
+     "plazma",
+     "makaze",
+     "savijanje",
+     "slitovanje"
+    ],
+    "apps": [
+     "limari",
+     "bravari",
+     "izvođači"
+    ]
+   },
+   "en": {
+    "t": "Processing services",
+    "sum": "CNC plasma and guillotine cutting, oxy-fuel cutting, slitting, bending, plate rolling, punching and section cutting.",
+    "desc": [
+     "Cutting on CNC plasma and guillotine shears, oxy-fuel cutting, slitting and recoiling of coils, bending and plate rolling, punching and corner notching, cutting sections on band saws.",
+     "You can buy material in mill packaging or have it processed — we carry out every operation on our own machines in Batajnica and Ugrinovci."
+    ],
+    "specs": [
+     [
+      "Services",
+      "14 processes"
+     ],
+     [
+      "Plasma / oxy-fuel",
+      "up to 30 / up to 150 mm"
+     ],
+     [
+      "Press brake",
+      "8.2 m"
+     ],
+     [
+      "Slitting",
+      "coil up to 1,260 mm"
+     ]
+    ],
+    "tags": [
+     "plasma",
+     "guillotine",
+     "bending",
+     "slitting"
+    ],
+    "apps": [
+     "sheet-metal workers",
+     "metal fabricators",
+     "contractors"
+    ]
+   }
+  },
+  {
+   "slug": "prodajni-program",
+   "kind": "group",
+   "cat": "program",
+   "img": "sheet-stack",
+   "page": "proizvodi.html",
+   "rel": [
+    "limovi",
+    "trapezni-lim",
+    "oluci-i-vertikale",
+    "cevi-i-zp-profili"
+   ],
+   "sr": {
+    "t": "Prodajni program",
+    "sum": "Limovi, trapezni i krovni limovi, oluci, cevi i ZP profili, čelični profili, kovani elementi, šrafovska roba i alat.",
+    "desc": [
+     "Limovi u tablama i koturu, trapezni i krovni limovi, oluci i vertikale, šavne cevi i ZP profili, čelični profili, kovani elementi, pletiva, šrafovska roba, alat i oprema za varenje.",
+     "Šest grupa proizvoda pokriva sve što jedna radionica troši. Dimenzije i raspoloživost na lageru proverite sa prodajom."
+    ],
+    "specs": [
+     [
+      "Grupe proizvoda",
+      "6"
+     ],
+     [
+      "Cena",
+      "zavisi od količine"
+     ],
+     [
+      "Popust",
+      "od jedne tone naviše"
+     ]
+    ],
+    "tags": [
+     "limovi",
+     "krov",
+     "oluci",
+     "cevi"
+    ],
+    "apps": [
+     "limarske i bravarske radionice",
+     "izvođači",
+     "kupci na malo"
+    ]
+   },
+   "en": {
+    "t": "Product range",
+    "sum": "Sheet metal, trapezoidal and roofing sheet, gutters, tubes and hollow sections, steel sections, wrought-iron elements, fasteners and tools.",
+    "desc": [
+     "Sheet metal in sheets and coils, trapezoidal and roofing sheet, gutters and downpipes, welded tubes and hollow sections, steel sections, wrought-iron elements, wire mesh, screws and fasteners, tools and welding equipment.",
+     "Six product groups cover everything a workshop uses. Check dimensions and stock availability with sales."
+    ],
+    "specs": [
+     [
+      "Product groups",
+      "6"
+     ],
+     [
+      "Price",
+      "depends on quantity"
+     ],
+     [
+      "Discount",
+      "from one tonne upwards"
+     ]
+    ],
+    "tags": [
+     "sheet metal",
+     "roofing",
+     "gutters",
+     "tubes"
+    ],
+    "apps": [
+     "sheet-metal and fabrication workshops",
+     "contractors",
+     "retail customers"
+    ]
+   }
+  },
+  {
+   "slug": "proizvodnja-po-meri",
+   "kind": "group",
+   "cat": "program",
+   "img": "tr35",
+   "page": "usluge.html#profilisanje",
+   "rel": [
+    "trapezni-lim",
+    "oluci-i-vertikale",
+    "lamperija",
+    "gradjevinska-limarija"
+   ],
+   "sr": {
+    "t": "Proizvodnja po meri",
+    "sum": "Trapezni lim, oluci i vertikale u dužini po želji, lamperija, parapetni lim, građevinska limarija, kanali, gazišta.",
+    "desc": [
+     "Trapezni pokrivni lim, oluci i vertikale u dužini po želji, lamperija, parapetni lim, kompletna građevinska limarija, kanali za ventilaciju, pocinkovana gazišta.",
+     "Profilirke rade iz kotura, pa dužinu diktira vaš objekat — krov ili fasada bez poprečnih preklopa."
+    ],
+    "specs": [
+     [
+      "Dužina",
+      "po meri objekta"
+     ],
+     [
+      "Profili",
+      "TR 10 – TR 60, imitacija crepa"
+     ],
+     [
+      "Oluci",
+      "RŠ 333 neograničeno"
+     ]
+    ],
+    "tags": [
+     "trapezni lim",
+     "oluci",
+     "lamperija"
+    ],
+    "apps": [
+     "krovovi",
+     "fasade",
+     "odvodnjavanje"
+    ]
+   },
+   "en": {
+    "t": "Made-to-measure production",
+    "sum": "Trapezoidal sheet, gutters and downpipes in any length, cladding panels, parapet sheet, building flashings, ducts, stair treads.",
+    "desc": [
+     "Trapezoidal profiled roofing sheet, gutters and downpipes in any length you choose, metal cladding panels, parapet lining sheet, complete building sheet-metal work, ventilation ducts, galvanised stair treads.",
+     "The roll formers work from coil, so the length is set by your building — a roof or façade with no transverse laps."
+    ],
+    "specs": [
+     [
+      "Length",
+      "to suit the building"
+     ],
+     [
+      "Profiles",
+      "TR 10 – TR 60, tile-effect sheet"
+     ],
+     [
+      "Gutters",
+      "333 mm unlimited length"
+     ]
+    ],
+    "tags": [
+     "trapezoidal sheet",
+     "gutters",
+     "cladding panels"
+    ],
+    "apps": [
+     "roofs",
+     "façades",
+     "drainage"
+    ]
+   }
+  }
+ ],
+ "illu": {
+  "alati": "<svg viewBox=\"0 0 400 300\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" focusable=\"false\"><g stroke=\"currentColor\" stroke-opacity=\".16\" stroke-width=\"1\"><path d=\"M0 150 H400 M133 0 V300 M266 0 V300\"/></g><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"><circle cx=\"66\" cy=\"76\" r=\"30\"/><circle cx=\"66\" cy=\"76\" r=\"8\"/><path d=\"M90 56 L116 44 L116 108 L90 96\"/><path d=\"M172 100 L172 62 L188 46 L216 46 L216 62 L200 62 L200 100 Z\"/><path d=\"M186 46 L186 30 L202 30 L202 46\"/><path d=\"M296 44 L340 44 L340 60 L326 60 L326 106 L310 106 L310 60 L296 60 Z\"/><path d=\"M40 196 L96 196 L96 264 L40 264 Z M40 210 L96 210 M68 196 L68 264\"/><circle cx=\"190\" cy=\"230\" r=\"30\"/><path d=\"M190 200 L190 230 L212 244\"/><path d=\"M296 200 L340 200 M296 216 L340 216 M296 232 L340 232 M296 248 L322 248\"/></g></svg>"
+ }
+}

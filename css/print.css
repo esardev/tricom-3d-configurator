@@ -1,0 +1,406 @@
+/* ==========================================================================
+   TRICOM — print.css                                   media="print"
+
+   UPGRADE 10 — list za štampu
+
+   B2B kupci štampaju ponude i strane sa specifikacijama. Ovaj list skida sve
+   što na papiru nema svrhu (traka, navigacija futera, dok, asistent, slajder,
+   nišan, bočna šina, poruke, dekorativni slojevi), sve otvara (tabovi,
+   akordeoni, reveal animacije) i vraća dokument na crno na belom.
+
+   Memorandumska linija se ponavlja na svakoj štampanoj strani kroz kutije
+   margine strane (@top-left / @top-right), a logo stoji u memorandumu na vrhu
+   dokumenta. Detalji i razlog za to rešenje su u odeljku 1.
+
+   Isključivanje: skinuti link element na css/print.css sa media=print sa
+   devet strana. Nijedno pravilo odavde ne utiče na ekran.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Zaglavlje
+
+   Dva sloja, jer nijedan sam ne može oboje:
+
+   a) MEMORANDUMSKA LINIJA NA SVAKOJ STRANI — kutije margine strane
+      (@top-left / @top-right). One se ispisuju u margini, dakle van toka, pa
+      NIŠTA ne prekrivaju i ponavljaju se na svakoj štampanoj strani.
+      Ograničenje: u kutiju margine ide samo tekst — Chrome ne iscrtava
+      content: url(...), pa logo tu ne može.
+
+   b) MEMORANDUM SA LOGOM NA PRVOJ STRANI — postojeća traka sajta
+      (.site-header) se vraća u tok, ostaje samo logo, a navigacija,
+      prekidač jezika, telefon i CTA se gase. Bez ijedne izmene u markupu.
+
+   Zašto ne position: fixed: takva traka se jeste ponavlja na svakoj strani,
+   ali se u Chrome-u iscrtava PREKO teksta od druge strane nadalje (izmereno:
+   sadržaj i traka počinju na istoj visini) — to bi sakrivalo sadržaj.
+   Repetitivno zaglavlje bez preklapanja u Chrome-u zahteva <table><thead>
+   oko celog dokumenta, što je izmena strukture strane.
+   -------------------------------------------------------------------------- */
+@page {
+  size: A4 portrait;
+  margin: 20mm 13mm 14mm;
+
+  @top-left {
+    content: 'TRICOM d.o.o. Batajnica · Kneza Paskača 16–18';
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 7.5pt;
+    color: #000;
+    vertical-align: bottom;
+  }
+  @top-right {
+    content: '063 850 30 00 · office@tricom.rs';
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 7.5pt;
+    color: #000;
+    vertical-align: bottom;
+  }
+}
+
+.site-header {
+  position: static !important;
+  display: flex !important;
+  height: auto !important;
+  align-items: center;
+  background: none !important;
+  border-bottom: 0.8pt solid #000 !important;
+  padding-bottom: 3mm;
+  margin-bottom: 6mm;
+  transform: none !important;
+}
+.site-header .header__inner { padding: 0 !important; max-width: none !important; }
+.site-header .brand img { filter: none !important; }
+/* Bez tekstualnog dodatka: adresu i kontakt već nosi linija u margini, na
+   svakoj strani. Ovde stoji samo znak, da se ne ponavlja isto dva puta. */
+
+/* --------------------------------------------------------------------------
+   2. Osnova: crno na belom
+   -------------------------------------------------------------------------- */
+html, body {
+  background: #fff !important;
+  color: #000 !important;
+  font-size: 10pt;
+  overflow: visible !important;
+}
+body { padding: 0 !important; }
+
+*, *::before, *::after {
+  animation: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Tamne površine gube tamnu temu — na papiru sve je belo.
+
+   !important na promenljivama je obavezan: blueprint blok u pages.css ima
+   selektor main > .section.dark:not(.emptyhead):not(.pagehead):not(.hero),
+   dakle veću specifičnost od bilo čega razumnog ovde. Bez toga bi
+   --fg-strong ostao #FFFFFF i naslovi u toj sekciji bi se štampali belo na
+   belom (izmereno: .cap__t je nestajao sa papira). */
+html, html[data-theme="dark"],
+.dark, .site-footer, .hero, .pagehead, .emptyhead,
+main > .section.dark:not(.emptyhead) {
+  --line:        rgba(0, 0, 0, .35) !important;
+  --line-strong: rgba(0, 0, 0, .5) !important;
+  --bg-elev:     #fff !important;
+  --hero-fg:     #000 !important;
+  --hero-muted:  #222 !important;
+  --hero-line:   rgba(0, 0, 0, .35) !important;
+  --cine-fg:     #000 !important;
+  --cine-fg-70:  #222 !important;
+  --cine-fg-60:  #444 !important;
+  --cine-line:   rgba(0, 0, 0, .35) !important;
+  --cine-ghost:  transparent !important;
+  --ghost:       transparent !important;
+  --photo-filter: none;
+  --bg:          #fff !important;
+  --bg-soft:     #fff !important;
+  --surface:     #fff !important;
+  --surface-2:   #fff !important;
+  --surface-3:   #fff !important;
+  --fg:          #000 !important;
+  --fg-strong:   #000 !important;
+  --fg-muted:    #222 !important;
+  --fg-faint:    #444 !important;
+  --hairline:    rgba(0, 0, 0, .35) !important;
+  --hairline-2:  rgba(0, 0, 0, .2) !important;
+  /* Akcenat ostaje brend plav i na papiru — isti kao na svetlim sekcijama,
+     pa oznake i mono vrednosti izgledaju isto kroz ceo dokument. */
+  --accent:      #0650C5 !important;
+  --accent-soft: transparent !important;
+  --accent-line: rgba(6, 80, 197, .4) !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+}
+.soft, .section, .card, .pcard, .cert, .mat, .infoblock, .note, .ctaband,
+.refhero, .ref, .cap, .stat, .prog__i, .step {
+  background: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+}
+h1, h2, h3, h4, h5, p, li, td, th, dt, dd, span, small, a, strong, b, em, figcaption, i {
+  color: #000 !important;
+}
+/* Hairline HUD trake je bela — na papiru je nevidljiva. */
+h1 .num, h2 .num, h3 .num, .lead .num {
+  color: #000 !important;
+  text-decoration-color: rgba(0, 0, 0, .45) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Sve što se ne štampa
+   -------------------------------------------------------------------------- */
+.site-header .nav,
+.site-header .header__cta,
+.site-header .header__phone,
+.site-header .burger,
+.mobile-nav,
+.dock,
+.ai-panel,
+.ai-nudge,
+.lightbox,
+.cursor,
+.cursor-dot,
+.grain,
+.scrollbar-progress,
+.loader,
+.rail,
+.lang-toast,
+.langsw,
+.skip-link,
+/* hero: štampa se naslov, rečenica i kartica sa presekom, bez pozadine i objekta */
+.hero__scroll,
+.hero__bg,
+.hero__horizon,
+.hero__ghost,
+.hero__obj,
+.pagehead__ghost,
+.pagehead__media,
+.themesw,
+.mnav__util,
+.footer__lines,
+.footer__cta,
+/* cele navigacione kolone futera, da naslov ne ostane bez liste ispod */
+.footer__col:has(> ul),
+.footer__col ul,
+.social,
+.marquee,
+.tabs__ink,
+.tocnav,
+.map-frame,
+.gallery,
+.acc__sign,
+.srow__go,
+.form-msg,
+.field__count,
+.btn,
+.link-kerf svg,
+.mnav__foot {
+  display: none !important;
+}
+
+/* Pločica lista i registarski uglovi su ekranska dekoracija. */
+[data-fig]::after,
+.figbox::before,
+.pcard__fig::before,
+.gitem::before,
+.tex-grid::before,
+main > .section.dark:not(.emptyhead)::after,
+.site-footer::before,
+.site-footer::after,
+.pagehead::before,
+.pagehead::after,
+.emptyhead::before,
+.emptyhead::after,
+.card::after,
+.pcard::after,
+.cert::after,
+.ref::before,
+.prog__i::before,
+.stat::before,
+.stat__num::before,
+.stat__num::after,
+.refstat__n::before,
+.refstat__n::after,
+.cap::before,
+.process::before,
+.process::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Sve otvoreno: reveal, tabovi, akordeoni
+   -------------------------------------------------------------------------- */
+[data-reveal],
+[data-reveal="cut"],
+[data-reveal="scale"] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  -webkit-mask-image: none !important;
+          mask-image: none !important;
+}
+/* Delovi hero-a nisu [data-reveal] — oni ulaze animacijom (lineUp, fadeUp).
+   Pošto štampa gasi sve animacije, bez ovoga bi ostali na početnom stanju:
+   naslov pomeren za 105% i odsečen sa overflow: hidden, a podnaslov, dugmad
+   i HUD traka na opacity: 0 — dakle prazna prva strana. */
+.hero h1 .ln, .hero__title .ln { overflow: visible !important; }
+.hero h1 .ln > span,
+.hero__title .ln > span,
+.hero__sub,
+.tr-sec__tick,
+.tr-sec__t,
+.loader__logo,
+.mnav__link,
+.mnav__toggle {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.tr-sec__p, .tr-sec__ext, .tr-sec__dim { stroke-dashoffset: 0 !important; }
+/* Rastavljeni crteži: linije oznaka i brojevi su na papiru uvek nacrtani. */
+.xp-lead { stroke-dashoffset: 0 !important; }
+.xp-tip, .xp-num { opacity: 1 !important; }
+.xp-part { transform: none !important; }
+.tabs__panel[hidden] { display: block !important; }
+.tabs__nav { position: static !important; display: none !important; }
+.acc__panel { grid-template-rows: 1fr !important; }
+.acc__panel > div { overflow: visible !important; }
+.mnav__sub { grid-template-rows: 1fr !important; }
+.spec-wrap { max-height: none !important; overflow: visible !important; }
+.sticky { position: static !important; }
+
+/* --------------------------------------------------------------------------
+   5. Geometrija strane
+   -------------------------------------------------------------------------- */
+.hero__in { display: block !important; padding: 0 !important; }
+.hero__copy { padding: 4mm 0 0 !important; }
+.hero__title { margin-bottom: 3mm !important; }
+.hero__sub { margin-bottom: 0 !important; }
+.hero, .pagehead, .emptyhead {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 8mm !important;
+  display: block !important;
+}
+.hero h1, .pagehead h1 { font-size: 22pt !important; max-width: none; }
+.hero__sub, .pagehead .lead { font-size: 10.5pt !important; }
+.section, .section--tight { padding-block: 7mm !important; }
+.wrap, .header__inner { max-width: none !important; padding-inline: 0 !important; }
+.split, .grid, .g2, .g3, .g4 { display: block !important; }
+.split > * + *, .grid > * + * { margin-top: 5mm; }
+.footer__main { display: block !important; padding-block: 6mm !important; }
+.site-footer { border-top: 0.6pt solid #000; }
+
+h1, h2, h3, h4 { page-break-after: avoid; break-after: avoid; }
+figure, .card, .pcard, .cert, .spec, .infoblock, .step, .acc__item, .cap, .ref {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* --------------------------------------------------------------------------
+   6. Tabele — pun okvir, čitljive na papiru
+   -------------------------------------------------------------------------- */
+.spec { min-width: 0 !important; width: 100% !important; font-size: 8.5pt; }
+.spec, .spec th, .spec td {
+  border: 0.6pt solid #000 !important;
+  background: #fff !important;
+  color: #000 !important;
+}
+.spec thead th { position: static !important; font-weight: 600; }
+.spec tbody tr:nth-child(even) { background: #fff !important; }
+.fsheet__r, .infoline { border-color: rgba(0, 0, 0, .3) !important; }
+
+/* .pagehead .badge tvrdo upisuje --arc-200 na tamnoj podlozi; na belom papiru
+   je to bila svetloplava na svetlosivoj — necitljivo. */
+.badge, .pagehead .badge, .tag, .ref__k, .cert__src {
+  background: none !important;
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, .4) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Fotografije — smanjene, ne troše stranu
+   -------------------------------------------------------------------------- */
+.figbox, .pcard__fig, .shead__media {
+  max-width: 84mm !important;
+  aspect-ratio: 16 / 10 !important;
+  border: 0.6pt solid #000 !important;
+}
+.figbox img, .pcard__fig img { max-height: 52mm; }
+img { max-width: 100% !important; }
+.footer__brand img { height: 14mm !important; }
+.brand img { height: 12mm !important; }
+
+/* --------------------------------------------------------------------------
+   8. Adresa spoljne veze ide iza teksta veze
+   -------------------------------------------------------------------------- */
+a[href^="http"]::after {
+  content: ' (' attr(href) ')';
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 7.5pt;
+  color: #444 !important;
+  word-break: break-all;
+}
+a[href^="mailto:"]::after,
+a[href^="tel:"]::after { content: none; }
+
+/* 3D konfigurator: poziv nema smisla na papiru */
+.kcta { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   9. 3D konfigurator — specifikacioni list (A4)
+
+   konfigurator.html štampa samo #kPrint: zaglavlje sa znakom i datumom,
+   slika trenutnog prikaza (iz foto režima, svetla pozadina), sažetak
+   objekta, tri tabele (krovne ravni, odvodnjavanje, limarija i
+   snegobrani), pretpostavke proračuna, napomena i pun link konfiguracije.
+   Linija sa adresom u margini (odeljak 1) ponavlja se i ovde na svakoj strani.
+   -------------------------------------------------------------------------- */
+.k-body { position: static !important; overflow: visible !important; height: auto !important; }
+.k-body > *:not(.k-print) { display: none !important; }
+.k-print { display: block !important; font-size: 9pt; line-height: 1.35; }
+.k-print__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 3mm 4mm; margin-bottom: 4mm; border: 0.8pt solid #000; border-radius: 3mm;   /* kartica zaglavlja: isti radijus-jezik kao na ekranu, crno na belom */
+}
+.k-print__head img { height: 11mm !important; width: auto; }
+.k-print__head b { display: block; font-family: var(--ff-display); font-size: 14pt; text-align: right; }
+.k-print__head span { display: block; font-family: var(--ff-mono); font-size: 8pt; text-align: right; }
+.k-print__head span span { display: inline; }
+.k-print__v + .k-print__v { break-before: page; page-break-before: always; }
+.k-print__vt { font-family: var(--ff-display); font-size: 12pt; margin: 0 0 3mm; }
+.k-print__top { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5mm; align-items: start; break-inside: avoid; }
+.k-print__img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border: 0.6pt solid #000; }
+.k-print__code { margin: 0 0 2mm; font-family: var(--ff-mono); font-size: 11pt; font-weight: 500; color: #0650C5 !important; }
+.k-print .k-sum { display: block; border-top: 0.6pt solid #000; }
+.k-print .k-sum div { display: grid; grid-template-columns: 25mm 1fr; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.4pt solid rgba(0, 0, 0, .35); }
+.k-print .k-sum dt { font-family: var(--ff-mono); font-size: 6.6pt; letter-spacing: .05em; text-transform: uppercase; }
+.k-print .k-sum dd { font-size: 8.2pt; }
+.k-print .k-tw { margin: 5mm 0 0; padding: 0; overflow: visible; }
+.k-print .k-tbl { width: 100%; min-width: 0; border-collapse: collapse; font-size: 7.8pt; font-variant-numeric: tabular-nums; }
+.k-print .k-tbl caption { padding: 0 0 1.5mm; text-align: left; font-family: var(--ff-mono); font-size: 7.6pt; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.k-print .k-tbl th, .k-print .k-tbl td { position: static !important; min-width: 0 !important; padding: 1.1mm 1.6mm; border: 0.5pt solid #000; background: #fff !important; text-align: left; vertical-align: top; }
+.k-print .k-tbl .num { text-align: right; font-family: var(--ff-mono); white-space: nowrap; }
+.k-print .k-tbl thead th { font-family: var(--ff-mono); font-weight: 500; font-size: 6.5pt; letter-spacing: .04em; text-transform: uppercase; }
+.k-print .k-tbl tfoot th, .k-print .k-tbl tfoot td { font-weight: 700; border-top: 1pt solid #000; }
+.k-print .k-tbl tr { break-inside: avoid; page-break-inside: avoid; }
+.k-print .k-tbl .k-sub td { padding-top: 0.6mm; font-family: var(--ff-mono); font-size: 6.6pt; border-top: 0; }
+.k-print .k-side { margin-left: 1mm; padding: 0 1mm; border: 0.4pt solid #000; font-family: var(--ff-mono); font-size: 6pt; }
+.k-print .k-fn { margin-top: 1.5mm; font-size: 7pt; }
+.k-print .k-note { margin-top: 4mm; padding: 2mm 3mm; border-left: 1.2pt solid #000; background: none !important; font-size: 8pt; }
+.k-print .k-as { margin-top: 5mm; border: 0; break-inside: avoid; page-break-inside: avoid; }
+.k-print .k-as summary { list-style: none; padding: 0 0 1.5mm; font-family: var(--ff-mono); font-size: 7.6pt; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.k-print .k-as summary::-webkit-details-marker { display: none; }
+.k-print .k-as dl { display: grid; grid-template-columns: 1fr 1fr; column-gap: 6mm; border-top: 0.6pt solid #000; }
+.k-print .k-as dl div { display: grid; grid-template-columns: 31mm 1fr; gap: 2mm; padding: 0.9mm 0; border-bottom: 0.4pt solid rgba(0, 0, 0, .3); font-size: 6.8pt; }
+.k-print .k-as dd { font-family: var(--ff-mono); }
+.k-print__url { margin-top: 3mm; font-family: var(--ff-mono); font-size: 6.6pt; word-break: break-all; }
+.k-print__foot { margin-top: 4mm; padding-top: 2mm; border-top: 0.4pt solid #000; font-size: 7.5pt; }

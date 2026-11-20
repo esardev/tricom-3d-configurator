@@ -1,0 +1,767 @@
+/* ==========================================================================
+   TRICOM — base.css
+   Dizajn sistem: tokeni, reset, tipografija, utilities
+   „Cinematic Industrial“ — hladni neutralni tonovi, jedna plava, hairline
+   linije, mono tehničke oznake. Paleta je uzorkovana iz logotipa
+   (assets/tricom-logo.png, histogram neprovidnih piksela):
+
+     slova      #0650C5  -> --brand (jedina primarna boja)
+     obrub      #072173  -> --brand-deep
+     grafit     #3A393B  -> --graphite
+     srebro     #BEBDBF  -> --silver
+     čelik      #717171  -> --steel-logo
+
+   TEMA: dve teme, svetla i tamna, preko html[data-theme="light" | "dark"].
+   Svetla je podrazumevana za sve posetioce. Mala skripta u <head>-u svake
+   strane (pre stilova) postavlja tamnu SAMO ako je localStorage['tricom-theme']
+   === 'dark' (izbor prekidačem) — sistemska postavka se ne prati, ni ovde ni
+   u CSS-u (jedan izvor istine), pa nema bleska pogrešne teme.
+   Svetla tema nema nijednu tamnu površinu: klase .dark (futer, „cinema“
+   paneli, traka brojeva, poziv u konfigurator) tamne su SAMO u tamnoj
+   temi — sva pravila sa tamnom ispunom nose nulti kvalifikator
+   :where(html[data-theme="dark"]), pa u svetloj temi te površine dobijaju
+   podlogu strane, staklo i svetle tokene (v. README, „Tema“).
+   Komponente čitaju samo semantičke tokene, nikad sirove boje.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Lokalni rezervni fontovi sa izjednačenom širinom (size-adjust). Dok se
+   Archivo i IBM Plex ne učitaju, tekst je u sistemskom fontu iste širine —
+   kad web font stigne, redovi se ne pomeraju (CLS pri učitavanju = 0).
+   Odnosi su izmereni u Chrome-u na Windows-u, po rasponu debljine.
+   -------------------------------------------------------------------------- */
+@font-face { font-family: 'Archivo Fallback'; src: local('Arial'), local('Helvetica'); font-weight: 100 450; size-adjust: 97.25%; }
+@font-face { font-family: 'Archivo Fallback'; src: local('Arial'), local('Helvetica'); font-weight: 451 550; size-adjust: 100.3%; }
+@font-face { font-family: 'Archivo Fallback'; src: local('Arial'), local('Helvetica'); font-weight: 551 650; size-adjust: 102%; }
+@font-face { font-family: 'Archivo Fallback'; src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'); font-weight: 651 750; size-adjust: 98.75%; }
+@font-face { font-family: 'Archivo Fallback'; src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'); font-weight: 751 900; size-adjust: 103.3%; }
+@font-face { font-family: 'Plex Sans Fallback'; src: local('Segoe UI Light'), local('Segoe UI'), local('Arial'); font-weight: 100 350; size-adjust: 104.8%; }
+@font-face { font-family: 'Plex Sans Fallback'; src: local('Segoe UI'), local('Arial'); font-weight: 351 450; size-adjust: 100.8%; }
+@font-face { font-family: 'Plex Sans Fallback'; src: local('Segoe UI'), local('Arial'); font-weight: 451 550; size-adjust: 102.6%; }
+@font-face { font-family: 'Plex Sans Fallback'; src: local('Segoe UI Semibold'), local('Segoe UI'), local('Arial'); font-weight: 551 900; size-adjust: 101.1%; }
+@font-face { font-family: 'Plex Mono Fallback'; src: local('Consolas'), local('Courier New'); size-adjust: 109.1%; }
+
+:root {
+  color-scheme: light;
+
+  /* --- Čelik / plate (tamna skala) --- */
+  --plate-950: #0B0E13;
+  --plate-900: #11151C;
+  --plate-850: #151A22;
+  --plate-800: #191F28;
+  --plate-700: #232A35;
+  --plate-600: #2E3745;
+
+  /* --- Čelik (neutralna skala) --- */
+  --steel-600: #5D6675;
+  --steel-500: #79828F;
+  --steel-400: #939BA8;
+  --steel-300: #AEB6C2;
+  --steel-200: #C9CFD9;
+  --steel-100: #DDE2E9;
+  --mill-100:  #EAEFF5;
+  --mill-50:   #F5F7FA;
+  --white:     #FFFFFF;
+
+  /* --- Iz logotipa --- */
+  --brand-deep: #072173;   /* tamnoplavi obrub slova */
+  --graphite:   #3A393B;   /* tamna strana savijenog lima */
+  --silver:     #BEBDBF;   /* svetla strana lima */
+  --steel-logo: #717171;   /* senka na limu */
+
+  /* --- Brend plava (logo) i svetlo --- */
+  --tricom:     #0650C5;   /* = --brand; ime ostaje zbog postojećih pravila */
+  --tricom-700: #0542A6;
+  --tricom-600: #0548B6;
+  --tricom-400: #3D7BE0;
+  --arc:        #5B9BFF;   /* plazma luk — svetlo, sjaj, akcenat na tamnom */
+  --arc-200:    #A9C9FF;
+  --arc-glow:   rgba(91, 155, 255, 0.22);
+  --arc-line:   rgba(91, 155, 255, 0.38);
+  --spark:      #FFAE52;   /* varnica — SAMO mikro-akcenat (tačka, vrh kote) */
+  --ok:         #4ADE80;   /* status „otvoreno“ (futer) */
+  --ok-ink:     #8FE9B6;
+  --ok-line:    rgba(74, 222, 128, .34);
+  --ok-deep:    #1F9D5C;   /* tačka „na mreži“ u asistentu */
+
+  /* ==== Semantika: SVETLA TEMA (hladni papir, crn tekst) ===============
+     Svaki par tekst/pozadina zadovoljava WCAG AA (v. README, „Tema“).
+     Paneli su jedan korak svetliji od podloge, uz hairline od 1 px. */
+  --bg:          #EEF1F5;           /* srebro / beton — podloga „Forged Glass“ */
+  --bg-rgb:      238, 241, 245;     /* ista boja kao trojka, za vinjetu pozadina */
+  --bg-elev:     #E6EAF0;           /* smenjive sekcije (.soft) — korak tamnije */
+  --surface:     #FFFFFF;           /* paneli i kartice — korak svetlije */
+  --surface-2:   #F1F4F8;           /* ploče za crteže, ugnježdeno */
+  --surface-3:   #E6EBF1;           /* nosači slika */
+  --line:        rgba(10, 14, 20, 0.11);
+  --line-strong: rgba(10, 14, 20, 0.28);
+  --fg:          #0A0E14;           /* skoro crna, ne siva */
+  --fg-strong:   #04070B;
+  --fg-muted:    #3E4958;
+  --fg-faint:    #535E6E;
+  --brand:       var(--tricom);     /* puna dugmad, linije */
+  --brand-ink:   #FFFFFF;           /* tekst na --brand: 7.1:1 */
+  --brand-hover: var(--tricom-700);
+  --accent:      var(--tricom);     /* plavi tekst i linije: 5.7:1 na --surface-3 */
+  --accent-soft: rgba(6, 80, 197, 0.07);
+  --accent-line: rgba(6, 80, 197, 0.30);
+  --grid-line:   rgba(6, 80, 197, 0.055);
+  --ghost:       rgba(10, 14, 20, 0.04);   /* vodeni žig na svetloj površini, ≤ 5% crne */
+  --header-solid: #EEF1F5;                  /* puna traka (konfigurator; sajt nosi staklo) */
+  --danger:      #B3261E;           /* greška u formi: 5.9:1 na --surface */
+
+  /* Toniranje fotografija — iste datoteke u obe teme.
+     Svetla: hladno, desaturisano, blago pojačan kontrast. */
+  --photo-filter: grayscale(.82) contrast(1.07) brightness(1.04);
+  --photo-tint: rgba(70, 104, 150, .12);
+  --photo-tint-blend: color;
+
+  /* Studijska pozadina konfiguratora (prati temu). Hero početne i zaglavlja
+     podstranica su „cinema“ panel tamne skale u obe teme — v. --cine-*. */
+  --hero-wall-1:  #E4E8EC;
+  --hero-wall-2:  #CED4DB;
+  --hero-floor-1: #BFC6CE;
+  --hero-floor-2: #E9ECEF;
+  --hero-fg:      #0B0E13;
+  --hero-muted:   #333C48;          /* 7.8:1 na #CED4DB */
+  --hero-line:    rgba(11, 14, 19, 0.16);
+
+  /* „Cinema“ panel (hero, zaglavlja, 404) — plate skala, isti u obe teme */
+  --cine-1:       #121721;          /* vrh */
+  --cine-2:       #0B0E13;          /* sredina (= --plate-950) */
+  --cine-3:       #07090D;          /* dno, kod platforme */
+  --cine-grid:    rgba(255, 255, 255, 0.06);   /* perspektivna mreža poda */
+  --cine-ghost:   rgba(255, 255, 255, 0.04);   /* vodeni žig na tamnom */
+  --cine-line:    rgba(255, 255, 255, 0.14);   /* hairline okviri na panelu */
+  --cine-fg:      #FFFFFF;                     /* naslov */
+  --cine-fg-70:   rgba(255, 255, 255, 0.70);   /* rečenica: 10.1:1 na --cine-1 */
+  --cine-fg-60:   rgba(255, 255, 255, 0.60);   /* mono oznake: 7.6:1 na --cine-1 */
+
+  /* --- Tipografija --- */
+  --ff-display: 'Archivo', 'Archivo Fallback', 'Helvetica Neue', Arial, sans-serif;
+  --ff-body:    'IBM Plex Sans', 'Plex Sans Fallback', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ff-mono:    'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* Modularna skala (mobile-first), fluid preko clamp() */
+  --t-xs:   0.75rem;
+  --t-sm:   0.875rem;
+  --t-base: 1rem;                                       /* telo 16/1.6, od 960 px 17/1.6 */
+  --t-md:   1.125rem;
+  --t-lg:   clamp(1.125rem, 0.9rem + 0.9vw, 1.375rem);
+  --t-xl:   clamp(1.375rem, 1.05rem + 1.4vw, 1.875rem);
+  --t-2xl:  clamp(1.75rem, 1.25rem + 2.2vw, 2.75rem);
+  --t-3xl:  clamp(2.25rem, 1.5rem + 2.3vw, 3.5rem);     /* naslovi sekcija 36–56 px */
+  --t-4xl:  clamp(2.75rem, 1.3rem + 5.2vw, 5.5rem);
+  --t-hero: clamp(3rem, 1.2rem + 6.4vw, 7.5rem);        /* hero 48–120 px */
+  --t-5xl:  var(--t-hero);
+  --t-label: 0.6875rem;                                 /* mono oznake: JEDNA veličina, 11 px */
+  --track-label: 0.16em;                                /* …i jedan razmak */
+  --lh-body: 1.6;
+  --measure: 66ch;                                      /* pasusi 60–70 znakova */
+
+  /* --- Prostor (8-pt raster) --- */
+  --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;
+  --sp-4: 1rem;     --sp-5: 1.5rem;   --sp-6: 2rem;
+  --sp-7: 3rem;     --sp-8: 3.5rem;   --sp-9: 5rem;
+  --sp-10: 7rem;    --sp-11: 9rem;
+
+  /* Jedna mreža: 12 kolona, 1440 px sadržaja, žleb 24 / 16 px.
+     Vertikalni ritam samo na skali od 8 px: sekcije 120 / 88 / 64. */
+  --section-y: 64px;
+  --gutter:    16px;
+  --col-gap:   16px;
+  --maxw:      calc(1440px + 2 * var(--gutter));
+  --maxw-text: var(--measure);
+
+  /* --- Radijusi („Forged Glass“ v2): xs za sitne kontrole, s za HUD /
+     polja / čipove, m za pločice i tabele, l za panele (podrazumevano),
+     xl za velike kapsule. Stara imena --r-sm/md/lg su pseudonimi s/m/l. --- */
+  --r-none: 0;
+  --r-xs: 6px;
+  --r-s: 14px;
+  --r-m: 24px;
+  --r-l: 36px;
+  --r-xl: 48px;
+  --r-sm: var(--r-s);
+  --r-md: var(--r-m);
+  --r-lg: var(--r-l);
+  --r-pill: 999px;
+
+  /* --- Staklo (L2) i HUD (L3). Svetla tema: mlečno belo staklo; tamna
+     (blok niže): dimljeno staklo. Jedan recept: --glass-fill podloga,
+     --glass-stroke 1 px obod, --glass-highlight 1 px unutrašnja linija na
+     vrhu, --glass-shadow meka duboka senka, --glass-bf zamućenje pozadine.
+     --glass-fill-solid je ista površina bez providnosti (bez backdrop-filter
+     podrške i na slabom hardveru, html.tier-low). --- */
+  --glass-fill:       rgba(255, 255, 255, .55);
+  --glass-fill-2:     rgba(255, 255, 255, .72);
+  --glass-fill-solid: #F7F9FC;
+  --glass-stroke:     rgba(10, 14, 20, .08);
+  --glass-highlight:  rgba(255, 255, 255, .60);
+  --glass-blur:       18px;
+  --glass-blur-sm:    10px;
+  --glass-bf:         blur(var(--glass-blur));
+  --glass-bf-sm:      blur(var(--glass-blur-sm));
+  --glass-shadow:     0 24px 60px rgba(10, 14, 20, .10);
+  --glass-shadow-sm:  0 8px 24px rgba(10, 14, 20, .08);
+  /* Sjaj luka — samo ispod 3D scena i na fokus/hover primarnih kontrola */
+  --glow-arc:         radial-gradient(closest-side, rgba(91, 155, 255, .32), rgba(91, 155, 255, 0));
+  /* Vodeni brojevi sekcija (3 % kontrasta) */
+  --numeral-ink:      rgba(10, 14, 20, .035);
+  /* Pozadine od čelika (slike iz assets/render; putanja je relativna na css/,
+     pa važi i za en/ strane). Ispod slike uvek stoji preliv, pa nedostajuća
+     slika ne ostavlja rupu. --bd-op je udeo slike (svetla 6 %, tamna 18 %). */
+  --bg-steel:   url('../assets/render/bg-steel-fractured-light.webp?v=2026-10-26');
+  --bg-brushed: url('../assets/render/bg-steel-brushed-light.webp?v=2026-10-26');
+  --bg-floor:   url('../assets/render/bg-floor-grid-light.webp?v=2026-10-26');
+  --bd-op:      .06;
+
+  /* Pokret: jedna kriva, pet trajanja (200 / 400 / 600 / 700 / 1000 ms).
+     Stara imena krivih ostaju kao pseudonimi iste krive. */
+  --ease:        cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: var(--ease);
+  --ease-cine:   var(--ease);
+  --dur-fast: 200ms;
+  --dur:      400ms;
+  --dur-slow: 600ms;
+  --dur-700:  700ms;
+  --dur-1000: 1000ms;
+
+  --z-bg: 0;
+  --z-content: 1;
+  --z-header: 80;
+  --z-dock: 90;
+  --z-panel: 95;
+  --z-overlay: 100;
+  --z-loader: 120;
+
+  --header-h: 64px;
+
+  /* Zrno: statičan feTurbulence kao data URI, bez slikovnih fajlova */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-op: .055;
+  --grain-blend: multiply;
+}
+
+@media (min-width: 900px) { :root { --header-h: 76px; } }
+@media (min-width: 768px) { :root { --section-y: 88px; --gutter: 24px; --col-gap: 24px; } }
+@media (min-width: 1200px) { :root { --section-y: 112px; } }
+@media (min-width: 960px) { :root { --t-base: 1.0625rem; } }
+
+/* --------------------------------------------------------------------------
+   TAMNA TEMA (slika 3: grafit, refleksivan pod, bela slova) i .dark površine.
+   Isti blok važi za celu stranu u tamnoj temi i — samo u tamnoj temi — za
+   .dark sekcije, „cinema“ pojaseve (zaglavlja podstranica, 404) i traku
+   preko njih. U svetloj temi te površine nasleđuju svetle tokene korena.
+   -------------------------------------------------------------------------- */
+html[data-theme="dark"],
+:where(html[data-theme="dark"]) .dark,
+:where(html[data-theme="dark"]) .pagehead, :where(html[data-theme="dark"]) .emptyhead,
+:where(html[data-theme="dark"]) .site-header.is-over {
+  --bg:          #0A0D12;            /* dublji čelik („Forged Glass“) */
+  --bg-rgb:      10, 13, 18;
+  --bg-elev:     #0F1319;
+  --surface:     #141920;
+  --surface-2:   #1A2029;
+  --surface-3:   #222934;
+  --line:        rgba(255, 255, 255, 0.09);   /* 9% bele */
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --fg:          #EBEEF2;            /* 92% bele */
+  --fg-strong:   #FFFFFF;
+  --fg-muted:    #9EA6B1;            /* 62% */
+  --fg-faint:    #8E97A3;
+  --brand-ink:   #FFFFFF;
+  --accent:      var(--arc);         /* 5.3:1 na --surface-3 */
+  --accent-soft: rgba(91, 155, 255, 0.10);
+  --accent-line: rgba(91, 155, 255, 0.36);
+  --grid-line:   rgba(255, 255, 255, 0.045);
+  --ghost:       var(--cine-ghost);
+  --header-solid: #0A0D12;
+  --danger:      #FF8A7A;            /* 7.6:1 na --surface */
+
+  /* Dimljeno staklo: tamna tinta sa malo bele, pa svetli tekst ostaje AA i
+     kad ispod stakla prolazi najsvetliji deo čelične pozadine (v. harness
+     contrast.js — stub „glass over backdrop“). */
+  --glass-fill:       rgba(24, 29, 37, .66);
+  --glass-fill-2:     rgba(36, 42, 52, .74);
+  --glass-fill-solid: #151A22;
+  --glass-stroke:     rgba(255, 255, 255, .12);
+  --glass-highlight:  rgba(255, 255, 255, .18);
+  --glass-shadow:     0 30px 80px rgba(0, 0, 0, .55);
+  --glass-shadow-sm:  0 12px 32px rgba(0, 0, 0, .45);
+  --numeral-ink:      rgba(255, 255, 255, .035);
+  --bg-steel:   url('../assets/render/bg-steel-fractured-dark.webp?v=2026-10-26');
+  --bg-brushed: url('../assets/render/bg-steel-brushed-dark.webp?v=2026-10-26');
+  --bg-floor:   url('../assets/render/bg-floor-grid-dark.webp?v=2026-10-26');
+  --bd-op:      .18;
+
+  /* Tamna: dublje senke, brend-plavo u svetlima */
+  --photo-filter: grayscale(1) sepia(.32) hue-rotate(176deg) saturate(1.7) contrast(1.16) brightness(.8);
+  --photo-tint: rgba(40, 96, 210, .22);
+  --photo-tint-blend: soft-light;
+
+  --hero-wall-1:  #1B212B;
+  --hero-wall-2:  #0B0E13;
+  --hero-floor-1: #06080B;
+  --hero-floor-2: #161B23;
+  --hero-fg:      #F2F5F9;
+  --hero-muted:   #AEB6C2;           /* 8.9:1 na #0E1218 */
+  --hero-line:    rgba(255, 255, 255, 0.14);
+
+  --grain-op: .045;
+  --grain-blend: screen;
+}
+html[data-theme="dark"] { color-scheme: dark; }
+
+/* --------------------------------------------------------------------------
+   Stara imena tokena — vezana za nova i ponovo izračunata u svakom opsegu u
+   kome se tema menja (koren i .dark): custom property sa var() nasleđuje već
+   izračunatu vrednost, pa bi bez ovoga .dark dobio svetle linije.
+   -------------------------------------------------------------------------- */
+:root, .dark, .hero, .pagehead, .emptyhead, .site-header.is-over {
+  --bg-soft:    var(--bg-elev);
+  --hairline:   var(--line);
+  --hairline-2: color-mix(in srgb, var(--line) 60%, transparent);
+  --shadow-1:   none;
+  --shadow-2:   none;
+}
+
+.dark { color: var(--fg); }
+/* U tamnoj temi .dark površine idu korak dublje, da ritam ostane (svetla tema:
+   bez sopstvene ispune — vidi se podloga strane). */
+:where(html[data-theme="dark"]) .dark { background-color: var(--bg-elev); }
+:where(html[data-theme="dark"]) .dark--deep { background-color: var(--bg); }
+html[data-theme="dark"] .dark,
+html[data-theme="dark"] .dark--deep { background-color: #07090D; }
+
+/* --------------------------------------------------------------------------
+   Rezervni režim stakla: slab hardver (html.tier-low postavlja motion.js) i
+   pregledači bez backdrop-filter-a dobijaju punu površinu bez zamućenja.
+   Vrednosti se vezuju za --glass-fill-solid u SVAKOM opsegu teme (koren i
+   .dark), inače bi .dark panel u svetloj temi dobio svetlu punu površinu.
+   -------------------------------------------------------------------------- */
+html.tier-low,
+html.tier-low .dark, html.tier-low .pagehead, html.tier-low .emptyhead, html.tier-low .site-header.is-over {
+  --glass-fill: var(--glass-fill-solid);
+  --glass-fill-2: var(--glass-fill-solid);
+  --glass-bf: none;
+  --glass-bf-sm: none;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root, .dark, .pagehead, .emptyhead, .site-header.is-over {
+    --glass-fill: var(--glass-fill-solid);
+    --glass-fill-2: var(--glass-fill-solid);
+    --glass-bf: none;
+    --glass-bf-sm: none;
+  }
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--ff-body);
+  font-size: var(--t-base);
+  line-height: var(--lh-body);
+  hanging-punctuation: none;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+/* Tamna tema: blagi vertikalni preliv, ne čista crna. */
+html[data-theme="dark"] body {
+  background: linear-gradient(180deg, #0C1016 0%, var(--bg) 40%, #07090D 100%) fixed var(--bg);
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+/* Ikone: jedna debljina poteza (1.5), boja iz teksta. */
+svg[fill="none"][stroke="currentColor"] { stroke-width: 1.5; }
+img { height: auto; }
+
+button, input, select, textarea { font: inherit; color: inherit; background: none; border: none; }
+button { cursor: pointer; }
+
+a { color: inherit; text-decoration: none; }
+
+ul, ol { list-style: none; }
+
+table { border-collapse: collapse; width: 100%; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection { background: var(--tricom); color: #fff; }
+
+/* Skrolbar */
+@media (min-width: 900px) {
+  ::-webkit-scrollbar { width: 11px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--line-strong); border: 3px solid var(--bg); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+}
+
+/* ==========================================================================
+   Tipografija
+   ========================================================================== */
+
+/* Display: Archivo. Razmak slova zavisi samo od veličine:
+   ≥ 56 px −0.03em · 32–56 px −0.02em · ispod 32 px 0. */
+h1, h2, h3, h4, h5 {
+  font-family: var(--ff-display);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: 0;
+  color: var(--fg-strong);
+  font-variation-settings: 'wdth' 100;
+  text-wrap: balance;              /* bez udovica u naslovima */
+}
+
+h1 { font-size: var(--t-4xl); font-weight: 800; letter-spacing: -0.03em; }
+h2 { font-size: var(--t-3xl); font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+h3 { font-size: var(--t-xl); }
+h4 { font-size: var(--t-lg); }
+h5 { font-size: var(--t-md); }
+
+/* Dva reza u jednom naslovu (slika 1): tanji nastavak posle punog dela. */
+.lt {
+  font-weight: 300;
+  letter-spacing: inherit;
+  color: inherit;
+}
+h1 .lt, h2 .lt { opacity: .86; }
+
+p { max-width: var(--maxw-text); text-wrap: pretty; }
+
+/* Tabularne cifre svuda gde ima brojeva. */
+body, table, input, output { font-variant-numeric: tabular-nums; }
+
+strong, b { font-weight: 600; color: var(--fg-strong); }
+
+.lead {
+  font-size: var(--t-lg);
+  line-height: 1.6;
+  color: var(--fg-muted);
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+/* Mono oznaka — jedna veličina (11 px), jedan razmak (0.16em), verzal. */
+.mono {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mono oznaka — uglovi panela, indeksi, kote, datumi, statusi */
+.label {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Oznaka sekcije — tanka linija + mono tekst */
+.marker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-4);
+}
+.marker::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  flex: none;
+}
+
+/* ==========================================================================
+   Layout utilities
+   ========================================================================== */
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+/* 12-kolonska mreža (isti žleb kao .wrap). */
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+
+.section { padding-block: var(--section-y); position: relative; }
+.section--tight { padding-block: calc(var(--section-y) * 0.5); }
+
+/* Smenjiva površina — beton u svetloj, korak svetlije u tamnoj temi */
+.soft { background-color: var(--bg-elev); }
+
+.grid { display: grid; gap: var(--col-gap); }
+/* Deca grida dobijaju min-width:auto po specifikaciji, pa ih široki sadržaj
+   (tabele, pre) razvlači i pravi horizontalni skrol. */
+.grid > *, .split > * { min-width: 0; }
+.g2 { grid-template-columns: 1fr; }
+.g3 { grid-template-columns: 1fr; }
+.g4 { grid-template-columns: repeat(2, 1fr); }
+
+@media (min-width: 640px) {
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 960px) {
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Dva stupca na istoj 12-kolonskoj mreži: 6 + 6, 5 + 7 (--40) ili 7 + 5
+   (--60). Prvi stubac nosi još jedan žleb desno, pa je vidljivi razmak 48 px,
+   a drugi stubac uvek počinje na liniji mreže. */
+.split {
+  display: grid;
+  gap: var(--sp-6);
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .split { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); row-gap: var(--sp-6); }
+  .split > :nth-child(odd)  { grid-column: 1 / span 6; padding-right: var(--col-gap); }
+  .split > :nth-child(even) { grid-column: 7 / span 6; }
+  .split--40 > :nth-child(odd)  { grid-column: 1 / span 5; }
+  .split--40 > :nth-child(even) { grid-column: 6 / span 7; }
+  .split--60 > :nth-child(odd)  { grid-column: 1 / span 7; }
+  .split--60 > :nth-child(even) { grid-column: 8 / span 5; }
+}
+
+/* Razmaci samo na skali od 8 px (umesto style="" atributa u markupu). */
+.u-mt-0  { margin-top: 0; }
+.u-mt-16 { margin-top: 16px; }
+.u-mt-24 { margin-top: 24px; }
+.u-mt-32 { margin-top: 32px; }
+.u-mt-40 { margin-top: 40px; }
+.u-mt-48 { margin-top: 48px; }
+.u-mb-16 { margin-bottom: 16px; }
+.u-mb-24 { margin-bottom: 24px; }
+.u-mb-32 { margin-bottom: 32px; }
+.u-mb-40 { margin-bottom: 40px; }
+.u-gap-16 { gap: 16px; }
+.u-rel { position: relative; }
+.u-start { align-items: start; }
+.u-center { align-items: center; }
+.u-acts { display: flex; flex-wrap: wrap; gap: 12px; }
+.u-ch-58 { max-width: 58ch; }
+.u-ch-52 { max-width: 52ch; }
+.u-sm { font-size: var(--t-sm); }
+.u-accent { color: var(--accent); }
+.u-bt-0 { border-top: 0; }
+
+.stack > * + * { margin-top: var(--sp-4); }
+.stack-lg > * + * { margin-top: var(--sp-6); }
+
+.muted { color: var(--fg-muted); }
+/* lista bez vidljivih zapisa (napomena iz app/site/site.php → site_empty) */
+.empty-note { grid-column: 1 / -1; margin: 0; padding: var(--sp-4) 0; color: var(--fg-muted); }
+.center { text-align: center; }
+.nowrap { white-space: nowrap; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute; top: -100px; left: var(--sp-4);
+  z-index: var(--z-loader);
+  background: var(--brand); color: var(--brand-ink);
+  padding: var(--sp-3) var(--sp-5);
+  font-weight: 600;
+  border-radius: var(--r-pill);
+  transition: top var(--dur-fast);
+}
+.skip-link:focus { top: var(--sp-4); }
+
+/* ==========================================================================
+   Teksture: nacrtna mreža, zrno
+   ========================================================================== */
+
+.tex-grid::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Sadržaj sekcije mora da ostane iznad teksture. */
+.tex-grid > .wrap { position: relative; z-index: 1; }
+
+
+/* Statično zrno preko velikih površina (beton / grafit) — jedan sloj za
+   celu stranu, ispod sadržaja koji prima klikove. */
+.grain {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: var(--grain-op);
+  mix-blend-mode: var(--grain-blend);
+  background-image: var(--grain);
+}
+
+/* Kerf — svetleća linija reza, koristi se kao separator */
+.kerf {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-line) 12%, var(--accent-line) 88%, transparent);
+  position: relative;
+}
+
+/* ==========================================================================
+   „Forged Glass“ — dubina, oblici i pozadine
+   L0 strana · L1 panel (puna --surface, --r-l) · L2 staklo (.g-card, lebdi,
+   zamućenje) · L3 HUD (čipovi, kote, --r-s / pilula, --glass-blur-sm).
+   Nikad više od tri nivoa u jednom kadru.
+   ========================================================================== */
+
+/* Asimetrija: jedan ugao panela sveden na --r-xs (utility, zato !important). */
+.cut-tl { border-top-left-radius: var(--r-xs) !important; }
+.cut-tr { border-top-right-radius: var(--r-xs) !important; }
+.cut-bl { border-bottom-left-radius: var(--r-xs) !important; }
+.cut-br { border-bottom-right-radius: var(--r-xs) !important; }
+
+/* Vodeni broj sekcije: data-num="01" na sekciji → ogromna Archivo 800 cifra
+   gore desno, 3 % kontrasta, ispod sadržaja. Mali mono indeks (.sectionix)
+   ostaje. Na .tex-grid sekcijama ::before nosi broj, a mreža prelazi na
+   ::after (v. niže); tamni „cinema“ paneli nose mrežu u sopstvenoj pozadini
+   (pages.css), pa tamo ::after gubi pločicu „SHEET 01“. */
+main > section[data-num] { position: relative; }
+main > section[data-num] > .wrap { position: relative; z-index: 1; }
+main > section[data-num]::before,
+main > section.tex-grid[data-num]::before,
+main > .section.dark.tex-grid[data-num]:not(.emptyhead):not(.pagehead):not(.hero)::before {
+  content: attr(data-num);
+  position: absolute;
+  inset: auto;
+  top: 16px;
+  right: var(--gutter);
+  z-index: 0;
+  margin: 0;
+  width: auto; height: auto;
+  background: none;
+  -webkit-mask-image: none; mask-image: none;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: clamp(160px, 12vw + 40px, 240px);
+  line-height: .8;
+  letter-spacing: -0.04em;
+  color: var(--numeral-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+main > section.tex-grid[data-num]::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 768px) {
+  main > section[data-num]::before,
+  main > section.tex-grid[data-num]::before,
+  main > .section.dark.tex-grid[data-num]:not(.emptyhead):not(.pagehead):not(.hero)::before { font-size: 96px; top: 12px; }
+}
+
+/* Kapsule: SVG clip-path (objectBoundingBox) definisan JEDNOM u <svg
+   class="shapes"> na vrhu <body> svake strane. a = zaobljen pravougaonik ∪
+   krug koji izbija gore desno; b = zaobljen pravougaonik ∪ pilula-jezičak
+   dole levo; c = pilula sa jednim urezom gore desno. Samo mediji, 3D scene i
+   tamni paneli uzimaju oblik; tekst unutra najmanje 48 px od ivice oblika.
+   Do 768 px oblici se svode na --r-l. */
+.shape-a, .shape-b, .shape-c { overflow: hidden; }
+.shape-a { clip-path: url(#shape-a); }
+.shape-b { clip-path: url(#shape-b); }
+.shape-c { clip-path: url(#shape-c); }
+svg.shapes { position: absolute; width: 0; height: 0; overflow: hidden; }
+@media (max-width: 768px) {
+  .shape-a, .shape-b, .shape-c { clip-path: none; border-radius: var(--r-l); overflow: hidden; }
+}
+
+/* Pozadine od čelika. Jedan niz slojeva, bez pseudo-elemenata: vinjeta u
+   boji podloge sa providnošću (1 − --bd-op) u sredini do pune na ivicama
+   (= udeo slike + vinjeta u jednom sloju), ispod nje slika, ispod slike
+   rezervni preliv čelika (vidi se dok slika ne postoji / ne stigne).
+   --bd-under može da unese dodatni preliv ispod slike (cinema paneli). */
+:where(html[data-theme="dark"]) :is(.bd-steel, .bd-brushed, .bd-floor) {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 85% 75% at 50% 42%,
+      rgba(var(--bg-rgb), calc(1 - var(--bd-op))) 0%,
+      rgba(var(--bg-rgb), calc(1 - var(--bd-op) * .55)) 58%,
+      rgba(var(--bg-rgb), 1) 100%),
+    var(--bd-img, var(--bg-steel)),
+    var(--bd-under, linear-gradient(118deg, #6B7280 0%, #2A3140 46%, #596273 100%));
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+.bd-steel   { --bd-img: var(--bg-steel); }
+.bd-brushed { --bd-img: var(--bg-brushed); --bd-under: linear-gradient(90deg, #4B5563 0%, #9AA3B0 38%, #3F4756 70%, #7B8494 100%); }
+.bd-floor   { --bd-img: var(--bg-floor); --bd-under: linear-gradient(180deg, #3A4150 0%, #1B2029 100%); }
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print */
+@media print {
+  .site-header, .dock, .ai-panel, .loader, .grain, .cursor { display: none !important; }
+  body { background: #fff; color: #000; }
+}

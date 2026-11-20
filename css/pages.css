@@ -1,0 +1,1692 @@
+/* ==========================================================================
+   TRICOM — pages.css
+   Blokovi specifični za pojedinačne stranice + potpisni blokovi
+   (lineup profila, rastavljeni crteži lima i oluka, numerisani niz)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Sistem panela (slika 1): sekcije prvog nivoa dele hairline ivica, a mono
+   oznaka „01 / 08“ stoji u gornjem levom uglu panela, sa linijom do ivice.
+   Brojevi su u HTML-u (<p class="sectionix">).
+   Isključivanje: obrisati .sectionix pravila i <p class="sectionix"> iz HTML-a.
+   -------------------------------------------------------------------------- */
+main > section:not(.hero):not(.emptyhead) { border-top: 1px solid var(--line); }
+
+.sectionix {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: none;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: var(--sp-6);
+  font-variant-numeric: tabular-nums;
+}
+.sectionix::before {
+  content: '';
+  width: 7px; height: 7px;
+  border: 1px solid currentColor;
+  flex: none;
+}
+/* linija do ivice se iscrtava pri prvom ulasku u ekran (main.js, modul 5) */
+.sectionix::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease);
+}
+.sectionix.is-in::after { transform: none; }
+@media (prefers-reduced-motion: reduce) { .sectionix::after { transform: none; } }
+
+/* ==========================================================================
+   „Cinema“ panel — po jedna tamna akcentna sekcija na strani (CNC plazma na
+   početnoj, kapaciteti na o-nama, profili na uslugama), tamna u OBE teme.
+   Nekadašnji plavi „blueprint“ list je sada grafit sa nacrtnom mrežom na
+   jedva vidljivom nivou i pločicom „SHEET 01 · TRICOM · 1:1“.
+   Isključivanje: obrisati blok; sekcije ostaju obične .dark površine.
+   ========================================================================== */
+/* Forged Glass: cinema panel leži na lomljenom čeliku (.bd-steel recept,
+   tamna slika u obe teme, 18 % pod vinjetom); ispod slike ostaju dve nacrtne
+   mreže na nižoj providnosti i plate preliv. Sve je u pozadini samog
+   elementa, pa ::before ostaje slobodan za vodeni broj (data-num). */
+main > .section.dark:not(.emptyhead):not(.pagehead):not(.hero) {
+  color: var(--fg);
+  border-top-color: var(--line);
+}
+/* tamna ispuna samo u tamnoj temi (svetla: podloga strane, v. base.css) */
+:where(html[data-theme="dark"]) main > .section.dark:not(.emptyhead):not(.pagehead):not(.hero) {
+  --bd-op: .18;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 50% 40%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(to right,  color-mix(in srgb, var(--cine-grid) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cine-grid) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to right,  color-mix(in srgb, var(--grid-line) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--grid-line) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--cine-1) 0%, var(--cine-3) 100%);
+  background-size: cover, cover, 120px 120px, 120px 120px, 24px 24px, 24px 24px, cover;
+  background-position: center, center, 0 0, 0 0, 0 0, 0 0, center;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat, no-repeat;
+  color: var(--fg);
+  border-top-color: var(--line);
+}
+main > .section.dark:not(.emptyhead).tex-grid::before { content: none; }
+/* Pločica „SHEET 01“ se povlači kad sekcija nosi vodeni broj. */
+main > .section.dark[data-num]:not(.emptyhead):not(.pagehead):not(.hero)::after { content: none; }
+main > .section.dark:not(.emptyhead):not(.pagehead):not(.hero)::after {
+  content: 'SHEET 01 · TRICOM · 1:1';
+  position: absolute;
+  top: 18px;
+  right: var(--gutter);
+  z-index: 1;
+  padding: 5px 12px;
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  border-radius: var(--r-pill);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--fg-faint);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   UPGRADE 03 — bočna šina sa pregledom sekcija (desktop ≥ 1200 px)
+   Šinu pravi modul sectionRail() u js/main.js. Ispod 1200 px i pod
+   prefers-reduced-motion je providna, ali OSTAJE dohvatljiva tastaturom.
+   -------------------------------------------------------------------------- */
+.rail {
+  position: fixed;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  z-index: calc(var(--z-header) - 2);
+  max-height: 62vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+.rail ol { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
+
+@media (min-width: 1200px) {
+  .rail { opacity: 1; pointer-events: auto; }
+  /* Dok je hero na ekranu, desnu ivicu drži vertikalni pejdžer. */
+  .rail.is-off { opacity: 0; pointer-events: none; }
+}
+.rail:focus-within { opacity: 1; pointer-events: auto; }
+
+.rail__t {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 12px;
+  background: none;
+}
+.rail__t::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  width: 6px; height: 1px;
+  margin-top: -0.5px;
+  background: var(--fg-faint);
+  transition: width var(--dur) var(--ease), background var(--dur);
+}
+.rail__t:hover::before { width: 13px; background: var(--accent); }
+.rail__t.is-active::before { width: 18px; height: 2px; margin-top: -1px; background: var(--accent); }
+.rail__t:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.rail__lbl {
+  position: absolute;
+  right: 28px; top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  padding: 5px 10px;
+  background: var(--plate-900);
+  border: 1px solid var(--cine-line);
+  border-radius: var(--r-pill);
+  color: var(--cine-fg);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.rail__t:hover .rail__lbl,
+.rail__t:focus-visible .rail__lbl { opacity: 1; transform: translateY(-50%); }
+/* Svetla tema: bez tamnih površina — natpis šine na svetlom staklu. */
+html:not([data-theme="dark"]) .rail__lbl { background: var(--glass-fill-solid); border-color: var(--glass-stroke); color: var(--fg-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rail { opacity: 0; pointer-events: none; }
+  .rail:focus-within { opacity: 1; pointer-events: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Sekcija sa naslovom
+   -------------------------------------------------------------------------- */
+/* Na 12 kolona: naslov 1–7, prateći tekst 9–12 (kolona 8 je vazduh). */
+.shead {
+  display: grid;
+  gap: var(--sp-4);
+  margin-bottom: 56px;
+}
+@media (min-width: 960px) {
+  .shead {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: var(--sp-4);
+    align-items: end;
+  }
+  .shead > :first-child { grid-column: 1 / span 7; }
+  .shead > :nth-child(2) { grid-column: 9 / span 4; }
+  .shead--stack > :first-child { grid-column: 1 / -1; }
+}
+.shead h2 { max-width: 18ch; }
+.shead__aside { font-size: var(--t-md); color: var(--fg-muted); font-weight: 300; line-height: 1.6; }
+.shead__aside p { max-width: 46ch; }
+
+/* Varijanta sa fotografijom: tekst 1–6, fotografija 7–12 */
+.shead--media .shead__aside { margin-top: var(--sp-5); }
+.shead--media .shead__media { align-self: stretch; }
+@media (min-width: 960px) {
+  .shead--media { align-items: center; }
+  .shead--media > :first-child { grid-column: 1 / span 6; }
+  .shead--media > :nth-child(2) { grid-column: 7 / span 6; }
+  .shead--media h2 { max-width: 16ch; }
+  .shead--media .shead__aside p { max-width: 48ch; }
+}
+
+/* --------------------------------------------------------------------------
+   Usluge — mreža panela sa mono brojem u uglu i strelicom gore desno
+   -------------------------------------------------------------------------- */
+/* Linije mreže nosi senka same ćelije, pa nepotpun poslednji red nema siv blok. */
+/* Usluge: 14 punih L1 panela (gust tekst) u mreži sa razmakom. */
+.slist {
+  position: relative;
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 700px) { .slist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .slist { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+
+.srow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 190px;
+  padding: 56px var(--sp-5) var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  transition: background var(--dur), border-color var(--dur), box-shadow var(--dur);
+}
+.srow:hover { border-color: var(--line-strong); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow); z-index: 1; }
+
+.srow__no {
+  position: absolute;
+  top: 18px; left: var(--sp-5);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  transition: color var(--dur);
+  font-variant-numeric: tabular-nums;
+}
+.srow:hover .srow__no { color: var(--accent); }
+
+.srow__t {
+  font-family: var(--ff-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-wrap: balance;
+  color: var(--fg-strong);
+  line-height: 1.15;
+  max-width: 20ch;
+}
+.srow__d {
+  font-size: var(--t-sm);
+  color: var(--fg-muted);
+  line-height: 1.55;
+}
+
+/* strelica gore desno: na hover se samo pomeri 4 px */
+.srow__go {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  color: var(--fg-faint);
+  transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.srow:hover .srow__go {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+.srow__go svg { width: 16px; height: 16px; stroke-width: 1.5; }
+
+/* --------------------------------------------------------------------------
+   Podaci o mašinama — datasheet: mono redni broj, naziv, opis, vrednost
+   -------------------------------------------------------------------------- */
+.caps {
+  display: grid;
+  border-top: 1px solid var(--line-strong);
+  counter-reset: cap;
+}
+
+.cap {
+  padding: var(--sp-4) 0;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  gap: 4px var(--sp-4);
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  counter-increment: cap;
+  transition: background var(--dur);
+}
+.cap::before {
+  content: counter(cap, decimal-leading-zero);
+  grid-row: 1 / span 2;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  padding-top: 4px;
+}
+.cap:hover { background: var(--accent-soft); }
+.cap__t { font-family: var(--ff-display); font-size: var(--t-md); font-weight: 600; color: var(--fg-strong); letter-spacing: 0; }
+.cap__d { grid-column: 2; font-size: var(--t-sm); color: var(--fg-muted); }
+.cap__v {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--ff-mono);
+  font-size: var(--t-md);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+@media (min-width: 760px) {
+  .cap { grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.2fr) 170px; align-items: center; padding: 18px 0; }
+  .cap::before { grid-row: auto; padding-top: 0; }
+  .cap__d { grid-column: 3; }
+  .cap__v { grid-column: 4; grid-row: auto; }
+}
+@media (max-width: 420px) {
+  .cap__v { font-size: var(--t-sm); }
+}
+
+/* Kapaciteti na o-nama: datasheet prelazi u mrežu velikih brojeva. */
+#kapaciteti .caps {
+  border-top: 0;
+  /* 8 kartica: 4 + 4 na desktopu, 2 kolone na tabletu, 1 na telefonu —
+     auto-fill je ostavljao samu poslednju karticu u redu. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 1024px) { #kapaciteti .caps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
+@media (max-width: 479px) { #kapaciteti .caps { grid-template-columns: minmax(0, 1fr); } }
+/* Kapaciteti na tamnom panelu: dimljene staklene kartice. */
+#kapaciteti .cap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 48px var(--sp-5) var(--sp-5);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+}
+#kapaciteti .cap:hover { background: var(--glass-fill-2); }
+#kapaciteti .cap::before { position: absolute; top: 18px; left: var(--sp-5); padding: 0; }
+#kapaciteti .cap__v { order: -1; align-self: flex-start; font-family: var(--ff-display); font-size: clamp(1.4rem, 2.1vw, 1.9rem); line-height: 1.05; font-weight: 700; letter-spacing: 0; color: var(--fg-strong); text-align: left; white-space: normal; }
+#kapaciteti .cap__t { font-size: var(--t-base); }
+
+/* --------------------------------------------------------------------------
+   Proces (koraci) — numerisani niz 01 · 02 · 03 · 04 (slika 1)
+
+   UPGRADE 10 — vodilica iznad brojeva se puni plavom dok se skroluje
+   (modul processLine() u js/main.js preko --pfill); pređeni korak dobija
+   .is-past i broj postaje plav. Ispod 1100 px koraci idu u jednu kolonu,
+   sa uspravnom vodilicom.
+   -------------------------------------------------------------------------- */
+.process {
+  display: grid;
+  gap: 0;
+  counter-reset: step;
+  position: relative;
+  --pfill: 0%;
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 1100px) { .process { grid-template-columns: repeat(4, 1fr); } }
+
+.process::before,
+.process::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+.process::before { content: none; }
+/* uspravna vodilica — koraci jedan ispod drugog */
+.process::after {
+  left: 0; top: 0;
+  width: 1px;
+  height: var(--pfill);
+  background: var(--accent);
+  transition: height var(--dur-fast) var(--ease);
+}
+@media (min-width: 1100px) {
+  .process::after {
+    left: 0; top: -1px;
+    width: var(--pfill); height: 1px;
+    transition: width var(--dur-fast) var(--ease);
+  }
+}
+
+.step {
+  position: relative;
+  z-index: 1;
+  padding: 58px 0 var(--sp-5) var(--sp-5);
+  counter-increment: step;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 1100px) {
+  .step { border-bottom: 0; border-left: 1px solid var(--line); padding: 64px var(--sp-5) var(--sp-4) var(--sp-5); }
+  .step:first-child { border-left: 0; padding-left: 0; }
+}
+
+.step::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  top: 18px; left: var(--sp-5);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  padding: 3px 10px;
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  border-radius: var(--r-pill);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+@media (min-width: 1100px) {
+  .step:first-child::before { left: 0; }
+}
+.step.is-past::before { color: var(--accent); border-color: var(--accent-line); }
+
+.step h4 { font-size: var(--t-md); margin-bottom: 9px; }
+.step p { font-size: var(--t-base); color: var(--fg-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Bez animacije: linija je puna, svi koraci označeni. */
+  .process { --pfill: 100%; }
+  .step::before { color: var(--accent); border-color: var(--accent-line); }
+}
+
+/* --------------------------------------------------------------------------
+   Numerisani niz (priprema DXF / DWG na plazmi) — kartice bez kutija
+   -------------------------------------------------------------------------- */
+.numrow { gap: 0; border-top: 1px solid var(--line-strong); }
+.numrow > .card {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  padding: 56px var(--sp-5) var(--sp-5) 0;
+}
+.numrow > .card:hover { background: none; }
+@media (min-width: 960px) {
+  .numrow > .card { border-bottom: 0; border-left: 1px solid var(--line); padding-left: var(--sp-5); }
+  .numrow > .card:first-child { border-left: 0; padding-left: 0; }
+  .numrow > .card:first-child::before { left: 0; }
+}
+.numrow > .card::before { top: 18px; left: 0; font-size: var(--t-md); color: var(--accent); }
+@media (min-width: 960px) { .numrow > .card::before { left: var(--sp-5); } }
+.numrow > .card::after { display: none; }
+.numrow .card__icon { width: 24px; height: 24px; position: absolute; top: 16px; right: var(--sp-5); color: var(--fg-faint); }
+
+/* --------------------------------------------------------------------------
+   Reference — Karađorđevo kao „cinema“ panel preko cele širine
+   -------------------------------------------------------------------------- */
+.refhero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: var(--sp-6);
+  margin-inline: calc(50% - 50vw);
+  padding: var(--sp-8) max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter)));
+  border-block: 1px solid var(--line);
+}
+:where(html[data-theme="dark"]) .refhero {
+  --bd-op: .18;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 50% 40%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(180deg, var(--cine-1), var(--cine-3));
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+@media (min-width: 960px) {
+  .refhero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: center;
+    gap: var(--sp-8);
+    padding-block: var(--sp-9);
+  }
+}
+.refhero::before {
+  content: 'REF. 01';
+  position: absolute;
+  top: 18px; left: max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter)));
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.refhero > * { position: relative; z-index: 1; }
+.refhero h3 { font-size: var(--t-2xl); letter-spacing: -0.02em; margin-bottom: var(--sp-4); max-width: 18ch; }
+.refhero .figbox { aspect-ratio: 3 / 2; border-color: var(--glass-stroke); }
+/* Statistike u panelu: dimljene staklene pločice (.refstat). */
+.refstats > * {
+  padding: 18px 22px 16px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+}
+
+.refstats { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-6); }
+.refstat__n {
+  font-family: var(--ff-display);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg-strong);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.refstat__l { font-family: var(--ff-mono); font-size: var(--t-label); color: var(--fg-faint); letter-spacing: var(--track-label);
+  text-transform: uppercase; margin-top: 7px; }
+
+/* Linije nosi senka same ćelije — poslednji red je nepotpun. */
+.reflist { display: grid; gap: 1px; background: var(--surface); border: 1px solid var(--glass-stroke); border-radius: var(--r-l); overflow: hidden; box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm); }
+.reflist > .ref { box-shadow: 0 0 0 1px var(--line); }
+@media (min-width: 640px) { .reflist { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .reflist { grid-template-columns: repeat(3, 1fr); } }
+
+.ref {
+  background: var(--surface);
+  padding: var(--sp-5);
+  transition: background var(--dur);
+  position: relative;
+}
+.ref:hover { box-shadow: 0 0 0 1px var(--line-strong); z-index: 1; }
+.ref__n { font-family: var(--ff-display); font-size: var(--t-md); font-weight: 600; color: var(--fg-strong); letter-spacing: 0; margin-bottom: 8px; }
+.ref__d { font-size: var(--t-sm); color: var(--fg-muted); }
+.ref__k {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  color: var(--fg-faint);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Sertifikati — hairline paneli
+   -------------------------------------------------------------------------- */
+/* Sertifikati = staklene pločice (L2) u mreži sa razmakom. */
+.certs { display: grid; gap: 12px; }
+@media (min-width: 700px) { .certs { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .certs { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+
+.cert {
+  padding: calc(var(--sp-6) + 18px) var(--sp-6) var(--sp-6);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  counter-increment: panel;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.cert::before {
+  content: counter(panel, decimal-leading-zero);
+  position: absolute; top: 18px; left: var(--sp-6);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.cert:hover { background: var(--glass-fill-2); border-color: var(--line-strong); }
+.cert__grade {
+  font-family: var(--ff-display);
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--accent);
+  margin-bottom: var(--sp-4);
+}
+/* „Zlatni“ sertifikat: oznaka u boji varnice — mikro-akcenat, ne površina */
+.cert--gold .cert__grade { color: var(--fg-strong); }
+.cert--gold .cert__grade::after {
+  content: '';
+  display: inline-block;
+  width: 8px; height: 8px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--spark);
+  vertical-align: super;
+}
+
+.cert h4 { font-size: var(--t-md); margin-bottom: 8px; }
+.cert p { font-size: var(--t-sm); color: var(--fg-muted); }
+.cert__src {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  color: var(--fg-faint);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Materijali (mreža sa uzorcima)
+   -------------------------------------------------------------------------- */
+/* Materijali: hairline mreža u punom L1 panelu (--r-l). */
+.mats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--glass-stroke); border-radius: var(--r-l); overflow: hidden; box-shadow: var(--glass-shadow-sm); }
+@media (min-width: 700px) { .mats { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .mats { grid-template-columns: repeat(6, 1fr); } }
+
+.mat {
+  overflow: hidden;
+  transition: background var(--dur);
+  background: var(--surface);
+}
+.mat:hover { background: var(--surface-2); }
+/* limovi: kartice vrsta lima su veze na program (?grupa=limovi&program=…) */
+.mats--pick .mat { color: inherit; text-decoration: none; cursor: pointer; }
+.mats--pick .mat:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.mats--pick .mat[aria-current="true"] { background: var(--surface-2); box-shadow: inset 0 -3px 0 var(--brand); }
+.mats--pick .mat[aria-current="true"] .mat__b b { color: var(--accent); }
+.sheet-prog { scroll-margin-top: calc(var(--header-h) + 16px); }
+#limovi-program { scroll-margin-top: calc(var(--header-h) + 16px); }
+/* broj programa zavisi od administracije (7 za limove): na širokom ekranu svi u jednom redu */
+@media (min-width: 1100px) { .mats--pick { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
+/* podgrupe izabranog programa: pilule-veze, izabrana kao brend pilula */
+.sheet-subs .pill { text-decoration: none; }
+.sheet-subs .pill[aria-current="page"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.sheet-subs .pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sheet-sub { scroll-margin-top: calc(var(--header-h) + 16px); }
+.mat__swatch { aspect-ratio: 3 / 2; position: relative; overflow: hidden; }
+/* Uzorci materijala — boje samog materijala (podatak, ne tema) */
+.mat__swatch--alu  { background: linear-gradient(135deg, #E3E7EA, #B6BDC4 48%, #D2D8DD); }
+.mat__swatch--zn   { background: linear-gradient(135deg, #D6D9DC, #A8ADB2 48%, #C6CACE); }
+.mat__swatch--inox { background: linear-gradient(135deg, #C9CFD6, #8F979F 48%, #B9C0C7); }
+.mat__swatch--cu   { background: linear-gradient(135deg, #C98A5A, #8A4F2C 48%, #B5713F); }
+.mat__swatch--ral  { background: linear-gradient(135deg, #9E3B34, #6E2723 48%, #8A322C); }
+.mat__swatch--fe   { background: linear-gradient(135deg, #6E7378, #3F4348 48%, #5A5F64); }
+.mat__swatch::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(92deg, color-mix(in srgb, var(--white) 14%, transparent) 0 1px, transparent 1px 4px);
+  mix-blend-mode: overlay;
+}
+.mat__b { padding: 13px 14px; }
+.mat__b b { display: block; font-size: var(--t-sm); color: var(--fg-strong); font-weight: 600; }
+.mat__b span { font-family: var(--ff-mono); font-size: var(--t-label); color: var(--fg-faint); letter-spacing: var(--track-label);
+  text-transform: uppercase; }
+
+/* --------------------------------------------------------------------------
+   CTA traka — hairline panel
+   -------------------------------------------------------------------------- */
+/* CTA traka = staklena ploča (L2, lebdi), brend linija uvučena uz levi rub. */
+.ctaband {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  padding: var(--sp-6);
+  display: grid;
+  gap: var(--sp-5);
+}
+.ctaband::before {
+  content: '';
+  position: absolute; left: 0; top: var(--r-l); bottom: var(--r-l); width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: var(--accent);
+}
+@media (min-width: 900px) {
+  .ctaband { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: var(--sp-7) var(--sp-8); gap: var(--sp-7); }
+}
+.ctaband h3 { font-size: var(--t-2xl); letter-spacing: -0.02em; max-width: 22ch; margin-bottom: 12px; }
+.ctaband p { font-size: var(--t-md); color: var(--fg-muted); max-width: 52ch; font-weight: 300; }
+.ctaband__acts { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+
+/* --------------------------------------------------------------------------
+   Feature strip — sadržaj je na početnoj prešao u donju traku hero-a;
+   klasa ostaje za strane koje bi je koristile samostalno.
+   -------------------------------------------------------------------------- */
+.featbar {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 640px) { .featbar { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1060px) { .featbar { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+.feat {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  padding: var(--sp-6) var(--sp-5);
+  display: flex; gap: var(--sp-4); align-items: flex-start;
+}
+.feat svg { width: 24px; height: 24px; color: var(--accent); flex: none; margin-top: 2px; stroke-width: 1.5; }
+.feat b { display: block; font-size: var(--t-base); color: var(--fg-strong); font-weight: 600; margin-bottom: 4px; }
+.feat span { font-size: var(--t-sm); color: var(--fg-muted); line-height: 1.55; }
+
+/* --------------------------------------------------------------------------
+   Dve lokacije — paneli sa mono metapodacima
+   -------------------------------------------------------------------------- */
+.locs { display: grid; gap: var(--sp-5); }
+@media (min-width: 800px) { .locs { grid-template-columns: repeat(2, 1fr); } }
+/* Lokacije: pun L1 panel (--r-l) sa mapom gore i datasheet-om dole. */
+.locs > div { border: 1px solid var(--glass-stroke); border-radius: var(--r-l); overflow: hidden; background: var(--surface); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm); }
+.locs .map-frame { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+.locs .infoblock { border: 0; border-radius: 0; box-shadow: none; }
+
+/* --------------------------------------------------------------------------
+   Mreža programa (proizvodi) sa ikonicama profila
+   -------------------------------------------------------------------------- */
+/* Program: hairline ćelije u JEDNOM staklenom panelu (L2) — jedno zamućenje. */
+.prog {
+  display: grid; gap: 1px; counter-reset: panel;
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+}
+@media (min-width: 640px) { .prog { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1060px) { .prog { grid-template-columns: repeat(3, 1fr); } }
+
+.prog__i {
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--hairline-2);
+  padding: calc(var(--sp-5) + 18px) var(--sp-5) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  transition: background var(--dur);
+  position: relative;
+  counter-increment: panel;
+}
+.prog__i::after {
+  content: counter(panel, decimal-leading-zero);
+  position: absolute; top: 14px; left: var(--sp-5);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.prog__i:hover { background: var(--glass-fill-2); }
+.prog__i h4 { font-size: var(--t-md); }
+.prog__i ul { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: var(--sp-3); }
+.prog__i li {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  color: var(--fg-faint);
+}
+.prog__svg { width: 104px; height: 78px; color: var(--accent); }
+.prog__svg svg text,
+.prog__svg svg tspan { display: none; }
+.prog__svg svg [stroke-opacity=".16"] { display: none; }
+/* Pomoćne linije u ikonicama nemaju fill atribut — bez ovoga ih pregledač puni crnim. */
+.prog__svg svg g:not([fill]) > path:not([fill]) { fill: none; }
+
+/* --------------------------------------------------------------------------
+   Sadržaj članka
+   -------------------------------------------------------------------------- */
+.prose { max-width: var(--maxw-text); }
+.prose p { color: var(--fg-muted); }
+.prose p + p { margin-top: var(--sp-4); }
+.prose h3 { margin-top: var(--sp-8); margin-bottom: var(--sp-3); }
+.prose ul { margin-top: var(--sp-4); }
+.prose ul li {
+  position: relative; padding-left: 22px; margin-bottom: 10px;
+  color: var(--fg-muted);
+}
+.prose ul li::before {
+  content: ''; position: absolute; left: 0; top: 12px;
+  width: 10px; height: 1px; background: var(--accent);
+}
+.prose strong { color: var(--fg-strong); }
+
+/* --------------------------------------------------------------------------
+   Sticky kolona
+   -------------------------------------------------------------------------- */
+@media (min-width: 960px) {
+  .sticky { position: sticky; top: calc(var(--header-h) + 28px); }
+}
+
+/* --------------------------------------------------------------------------
+   Bočna navigacija po sekcijama (o-nama)
+   -------------------------------------------------------------------------- */
+.tocnav { border-left: 1px solid var(--line); padding-left: var(--sp-4); }
+.tocnav a {
+  display: block;
+  padding: 9px 0;
+  font-size: var(--t-base);
+  color: var(--fg-muted);
+  transition: color var(--dur-fast), padding-left var(--dur-fast);
+  position: relative;
+}
+.tocnav a::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--sp-4) * -1 - 1px); top: 50%;
+  width: 2px; height: 0;
+  background: var(--accent);
+  transform: translateY(-50%);
+  transition: height var(--dur) var(--ease);
+}
+.tocnav a:hover, .tocnav a.is-active { color: var(--fg-strong); padding-left: 8px; }
+.tocnav a.is-active::before { height: 22px; }
+
+/* --------------------------------------------------------------------------
+   404 / prazno stanje — vodeni žig „404“, jedna pilula
+   -------------------------------------------------------------------------- */
+.empty {
+  position: relative;
+  text-align: center;
+  padding-block: var(--sp-9);
+}
+.empty h1 { color: var(--cine-fg); }
+.empty__h { font-size: var(--t-4xl); margin-bottom: 16px; }
+.empty .lead { color: var(--cine-fg-70); margin-inline: auto; }
+.empty__code {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -54%);
+  z-index: -1;
+  font-family: var(--ff-display);
+  font-size: clamp(10rem, 38vw, 30rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: .8;
+  color: var(--cine-ghost);
+  pointer-events: none;
+  user-select: none;
+}
+.empty__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+  margin-top: var(--sp-6);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+.empty__links a { color: var(--cine-fg-70); border-bottom: 1px solid var(--cine-line); padding-bottom: 3px; transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease); }
+.empty__links a:hover { color: var(--cine-fg); border-color: var(--cine-fg); }
+
+/* ==========================================================================
+   Poziv u 3D konfigurator — tamni panel u tamnoj temi, staklo u svetloj
+   ========================================================================== */
+/* Kapsula (--r-l); u tamnoj temi na lomljenom čeliku, nacrtna mreža ispod. */
+.kcta {
+  display: grid; gap: var(--sp-6); align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 1rem + 2.6vw, 3.25rem);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  background-color: var(--glass-fill);
+}
+:where(html[data-theme="dark"]) .kcta {
+  --bd-op: .18;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 90% at 40% 40%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(180deg, var(--cine-1), var(--cine-3));
+  background-size: cover, cover, 24px 24px, 24px 24px, cover;
+  background-position: center, center, 0 0, 0 0, center;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat;
+}
+.kcta h3 { font-family: var(--ff-display); font-weight: 700; font-size: var(--t-2xl); line-height: 1.04; letter-spacing: -0.02em; color: var(--fg-strong); margin: 8px 0 16px; }
+.kcta__txt > p:not(.marker) { max-width: 54ch; color: var(--fg-muted); }
+.kcta__list { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 16px 0 24px; font-family: var(--ff-mono); font-size: var(--t-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fg-faint); }
+.kcta__list li { padding-left: 14px; position: relative; }
+.kcta__list li::before { content: ''; position: absolute; left: 0; top: .62em; width: 6px; height: 1px; background: var(--accent); }
+.kcta__art { color: var(--arc-200); }
+.kcta__art svg { width: 100%; height: auto; max-width: 460px; margin-inline: auto; }
+@media (min-width: 900px) { .kcta { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); } }
+.tabs + .kcta { margin-top: var(--sp-8); }
+
+/* ==========================================================================
+   LINEUP — kartice profila (slika 1): presek na ploči, ime, jedan red opisa.
+   Crteži su izvedeni iz iste tačke preseka koju koristi konfigurator
+   (TK.geo.profilePoints), u stvarnim proporcijama.
+   ========================================================================== */
+/* Lineup: hairline ćelije u JEDNOM staklenom panelu (L2). */
+.lineup {
+  display: grid;
+  gap: 1px;
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  overflow: hidden;
+  counter-reset: lu;
+}
+@media (min-width: 640px) { .lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1060px) { .lineup { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* Razmaci potpisnih blokova po kontekstu (umesto style atributa u markupu) */
+.lineup__label { margin-bottom: 12px; }
+.lineup + .prog { margin-top: var(--sp-6); }
+.tabs__panel .lineup, .tabs__panel .xplode { margin-bottom: 2.5rem; }
+.shead__aside .link-kerf { margin-top: 1rem; }
+
+.lu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--hairline-2);
+  counter-increment: lu;
+  transition: background var(--dur);
+}
+.lu:hover { background: var(--glass-fill-2); }
+.lu::before {
+  content: counter(lu, decimal-leading-zero);
+  position: absolute; top: 14px; left: 16px; z-index: 1;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.lu__plate {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  margin: 10px;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  background-color: var(--surface-2);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+html[data-theme="dark"] .lu__plate { background-color: var(--cine-2); }
+.lu__plate svg { width: 92%; height: auto; overflow: visible; }
+@media (max-width: 639px) { .lu__plate { aspect-ratio: 16 / 8; } }
+.lu__k {
+  position: absolute; right: 10px; bottom: 8px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.lu__b { padding: 6px 16px 18px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.lu__n { font-family: var(--ff-display); font-size: var(--t-lg); font-weight: 700; letter-spacing: 0; color: var(--fg-strong); }
+.lu__d { font-size: var(--t-sm); color: var(--fg-muted); line-height: 1.5; }
+
+/* Delovi SVG crteža — boje dolaze iz tokena, pa crtež prati temu */
+.svg-face  { fill: var(--surface); }
+.svg-face2 { fill: var(--surface-3); }
+.svg-edge  { fill: none; stroke: var(--fg-strong); stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.svg-thin  { fill: none; stroke: var(--fg-faint); stroke-width: .7; vector-effect: non-scaling-stroke; }
+.svg-arc   { fill: none; stroke: var(--arc); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.svg-kote  { fill: none; stroke: var(--fg-faint); stroke-width: .7; vector-effect: non-scaling-stroke; }
+.svg-txt   { fill: var(--fg-faint); font-family: var(--ff-mono); font-size: 9px; letter-spacing: .06em; }
+/* natpisi u crtežu poziva u konfigurator (jedinice crteža, ne CSS pikseli) */
+.svg-lbl   { font-family: var(--ff-mono); font-size: 9px; letter-spacing: .04em; }
+.svg-lbl--s { font-size: 7.5px; }
+
+/* ==========================================================================
+   RASTAVLJENI CRTEŽ — slojevi lima i delovi olučnog sistema (slika 1)
+   Crtež (2/3) i oznake (1/3). Linije oznaka se iscrtavaju kada blok uđe u
+   ekran (.is-in od modula reveal); vrhovi linija su tačke boje varnice.
+   Na telefonu se oznake slažu ispod crteža.
+   ========================================================================== */
+/* Rastavljeni crtež: staklena ploča (L2, --r-l). */
+.xplode {
+  display: grid;
+  gap: var(--sp-6);
+  align-items: center;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  padding: var(--sp-6) var(--sp-5);
+  position: relative;
+  isolation: isolate;
+}
+@media (min-width: 960px) {
+  .xplode { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); padding: var(--sp-7) var(--sp-7) var(--sp-7) var(--sp-6); }
+}
+.xplode__tag {
+  position: absolute; top: 14px; left: 16px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.xplode__fig { position: relative; margin-top: var(--sp-4); }
+.xplode__fig svg { width: 100%; height: auto; overflow: visible; }
+.xplode__list { counter-reset: xp; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.xplode__list li {
+  counter-increment: xp;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 2px 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.xplode__list li::before {
+  content: counter(xp, decimal-leading-zero);
+  grid-row: 1 / span 2;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.xplode__list b { font-family: var(--ff-display); font-size: var(--t-base); font-weight: 600; color: var(--fg-strong); letter-spacing: 0; }
+.xplode__list span { font-size: var(--t-sm); color: var(--fg-muted); line-height: 1.5; }
+
+/* Linije oznaka: pathLength="1" u SVG-u, crtanje preko dashoffset-a */
+.xp-lead { fill: none; stroke: var(--accent); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur-slow) var(--ease); }
+.xp-tip  { fill: var(--spark); opacity: 0; transition: opacity var(--dur) var(--ease); }
+.xp-num  { fill: var(--accent); font-family: var(--ff-mono); font-size: 10px; letter-spacing: .06em; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.xp-part { transition: transform var(--dur-slow) var(--ease); }
+.is-in .xp-lead { stroke-dashoffset: 0; }
+.is-in .xp-tip, .is-in .xp-num { opacity: 1; transition-delay: 700ms; }
+.is-in .xp-lead:nth-of-type(2) { transition-delay: 90ms; }
+.is-in .xp-lead:nth-of-type(3) { transition-delay: 180ms; }
+.is-in .xp-lead:nth-of-type(4) { transition-delay: 270ms; }
+.is-in .xp-lead:nth-of-type(5) { transition-delay: 360ms; }
+.is-in .xp-lead:nth-of-type(6) { transition-delay: 450ms; }
+.is-in .xp-lead:nth-of-type(7) { transition-delay: 540ms; }
+/* Slojevi „izađu“ iz paketa kada blok uđe u ekran; polazni pomak po sloju */
+.xp-f0 { --xp-from: 0px; }
+.xp-f39_1 { --xp-from: 39.1px; }
+.xp-f78_3 { --xp-from: 78.3px; }
+.xp-fm39_1 { --xp-from: -39.1px; }
+.xp-fm78_3 { --xp-from: -78.3px; }
+/* šest slojeva plastificiranog lima (sheet-layers-*.php): složeni paket pre ulaska u ekran */
+.xp-f84 { --xp-from: 84px; }
+.xp-f52 { --xp-from: 52px; }
+.xp-f20 { --xp-from: 20px; }
+.xp-fm10 { --xp-from: -10px; }
+.xp-fm44 { --xp-from: -44px; }
+.xp-fm76 { --xp-from: -76px; }
+[data-reveal].xplode:not(.is-in) .xp-part { transform: translateY(var(--xp-from, 0)); }
+/* telefon: crtež je uži od 640 jedinica — brojevi slojeva i tačke dovoljno veliki za čitanje */
+@media (max-width: 600px) {
+  .xplode--layers .xp-num { font-size: 20px; }
+  .xplode--layers .xp-tip { r: 4px; }
+}
+
+/* Materijali crteža: osnovna boja iz tokena (--m) i pet nivoa osvetljenja
+   (s1 najsvetlije) — senčenje mešanjem sa tamnom pločom, bez novih boja.
+   Šavovi između poligona se zatvaraju potezom iste boje. */
+.mg { --m: var(--silver); }         /* pocinkovani lim */
+.mc { --m: var(--graphite); }       /* boja po RAL karti */
+.mp { --m: var(--steel-200); }      /* prajmer */
+.mz { --m: var(--silver); }         /* cink */
+.ms { --m: var(--steel-logo); }     /* čelično jezgro, kuka, obujmica */
+.mf { --m: var(--steel-300); }      /* antikondenz filc */
+.mx { --m: var(--steel-400); }      /* profil u lineupu: čelik u svetloj… */
+html[data-theme="dark"] .mx { --m: var(--silver); }   /* …pocinkovan u tamnoj */
+.s1, .s2, .s3, .s4, .s5 { stroke-width: .6; stroke-linejoin: round; }
+.s1 { fill: color-mix(in srgb, var(--m) 88%, var(--white)); stroke: color-mix(in srgb, var(--m) 88%, var(--white)); }
+.s2 { fill: var(--m); stroke: var(--m); }
+.s3 { fill: color-mix(in srgb, var(--m) 82%, var(--plate-950)); stroke: color-mix(in srgb, var(--m) 82%, var(--plate-950)); }
+.s4 { fill: color-mix(in srgb, var(--m) 64%, var(--plate-950)); stroke: color-mix(in srgb, var(--m) 64%, var(--plate-950)); }
+.s5 { fill: color-mix(in srgb, var(--m) 46%, var(--plate-950)); stroke: color-mix(in srgb, var(--m) 46%, var(--plate-950)); }
+.xp-dash { stroke-dasharray: 3 4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-lead { stroke-dashoffset: 0; transition: none; }
+  .xp-tip, .xp-num { opacity: 1; transition: none; }
+  [data-reveal].xplode:not(.is-in) .xp-part { transform: none; }
+}
+
+/* ===== FORGED: proizvodi ===== */
+/* Slike koje prate temu: dva <picture> (…-light / …-dark) jedan uz drugi,
+   CSS prikazuje samo onaj za tekuću html[data-theme]; skriveni je lazy, pa se
+   ne učitava. Pomoćna klasa je opšta (bez prefiksa strane) — nema je u DS-u. */
+.theme-img { display: block; }
+html[data-theme="dark"] .theme-img--light { display: none; }
+html:not([data-theme="dark"]) .theme-img--dark { display: none; }
+.theme-img img, .pp-cap img, .kcta__art--render img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Otvaranje taba: tekst levo (1–6), studijski still porodice u kapsuli
+   .shape-b desno (7–12); na telefonu kapsula preko cele širine iznad teksta. */
+.pp-open { display: grid; gap: var(--sp-6); align-items: start; margin-bottom: var(--sp-7); }
+.pp-open__media {
+  position: relative; width: 100%; aspect-ratio: 16 / 10;
+  background: var(--surface-2);
+  isolation: isolate;
+}
+.pp-open__media > picture { position: absolute; inset: 0; }
+.pp-open__side { display: grid; gap: 12px; }
+.pp-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+/* Mali stakleni okviri uz kapsulu (Kontra): render u staklenoj kartici, bez zamućenja. */
+.pp-tile {
+  position: relative; aspect-ratio: 16 / 10;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+}
+.pp-tile > picture { position: absolute; inset: 8px; border-radius: calc(var(--r-m) - 8px); overflow: hidden; background: var(--surface-2); }
+@media (min-width: 960px) {
+  .pp-open { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
+  .pp-open__txt { grid-column: 1 / span 6; padding-right: var(--col-gap); }
+  .pp-open__media, .pp-open__side { grid-column: 7 / span 6; }
+  .pp-open__side > .pp-open__media { grid-column: auto; }
+}
+@media (max-width: 959px) { .pp-open > .pp-open__media, .pp-open > .pp-open__side { order: -1; } }
+
+/* Lineup: render sličica iznad ploče sa presekom (crtež ostaje tehnički
+   sadržaj); redni broj kao mala staklena pilula preko slike. TR 60/210 kartica
+   (dodaje je catalog-render, nema rendera) rasteže ploču umesto sličice. */
+.lu__ph { position: relative; aspect-ratio: 16 / 10; margin: 10px 10px 0; border-radius: var(--r-m) var(--r-m) var(--r-s) var(--r-s); overflow: hidden; background: var(--surface-2); }
+.lu__ph > picture { position: absolute; inset: 0; }
+.lu__ph + .lu__plate { margin-top: 6px; }
+.lineup .lu::before { top: 18px; left: 18px; padding: 4px 8px; border-radius: var(--r-pill); background: var(--glass-fill-solid); box-shadow: 0 0 0 1px var(--glass-stroke); color: var(--fg-muted); }
+.lu:not(:has(> .lu__ph)) .lu__plate { aspect-ratio: auto; flex: 1 1 auto; min-height: 200px; }
+.lu:not(:has(> .lu__ph)) .lu__b { flex: 0 0 auto; }
+@media (max-width: 639px) { .lu__ph { aspect-ratio: 16 / 7; } }
+@media (min-width: 1060px) { .lineup { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1400px) { .lineup { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+/* Kartice programa sa renderom: bez foto-tinte i nacrtne mreže preko slike. */
+.pcard__fig--render { background: var(--surface-2); }
+.pcard__fig--render::before { display: none; }
+.pcard__fig--render > picture { position: absolute; inset: 0; z-index: 1; }
+.pcard__fig--render img { filter: none; }
+
+/* Materijali: staklo (L2) sa hairline ćelijama, kao lineup/prog — jedno zamućenje. */
+#prog .mats {
+  gap: 0;
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  isolation: isolate;
+}
+#prog .mat { background: transparent; box-shadow: 0 0 0 1px var(--hairline-2); }
+#prog .mat:hover { background: var(--glass-fill-2); }
+
+/* Rastavljeni crtež: crtež leži na kapsuli (.shape-b) sa nacrtnom mrežom
+   unutar staklenog panela; oznake ostaju unutar pravougaonog dela kapsule. */
+#prog .xplode__fig { margin-top: 0; padding: 6% 7% 10%; }
+#prog .xplode__fig::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  clip-path: url(#shape-b);
+  background-color: var(--surface-2);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+html[data-theme="dark"] #prog .xplode__fig::before { background-color: var(--cine-2); }
+@media (max-width: 768px) { #prog .xplode__fig::before { clip-path: none; border-radius: var(--r-m); } }
+
+/* Poziv u konfigurator: rendgenski render kuće u kapsuli (.shape-a) na čeličnoj ploči. */
+.kcta__art--render { position: relative; width: 100%; max-width: 560px; aspect-ratio: 16 / 10; margin-inline: auto; background: var(--cine-1); }
+.kcta__art--render picture { position: absolute; inset: 0; display: block; }
+
+/* Sekcija 02: scena u kapsuli (.shape-a) umesto panoramske fotografije. */
+.pp-cap { position: relative; width: 100%; aspect-ratio: 16 / 10; background: var(--surface-2); }
+.pp-cap picture { position: absolute; inset: 0; display: block; }
+
+/* Natpis tabele počinje na samoj ivici .spec-wrap, pa ga zaobljeni ugao
+   (--r-m, overflow:auto) seče ("ROGRAM LIMOVA"). Lokalno: isti uvlak kao
+   ćelije zaglavlja. (DS: isto važi za sve .spec-wrap tabele sa natpisom.) */
+#prog .spec__cap { padding: 14px 18px 12px; }
+
+/* ===== FORGED: kontakt ===== */
+/* Kontakt (kontakt.html / en/contact.html): forma u velikoj staklenoj kartici
+   sa jezičkom (jezičak nosi brojač znakova .field__count — isti hook, samo
+   premešten), podaci o firmi kao staklene kartice, lokacije kao staklo sa
+   HUD markerom na spoju mape i podataka, renderi u kapsulama (.shape-b/-c).
+   Hookovi forme (form[data-validate] .field .field__err .form-msg has-error
+   #f-poruka [data-count-for] [data-map] [data-copy] .locs .process .step)
+   su netaknuti. Isključivanje: obrisati ovaj blok i klase kf-* iz markupa. */
+
+/* Slika po temi: dve <picture> (…-light / …-dark), CSS bira po html[data-theme]. */
+.theme-img--dark { display: none; }
+html[data-theme="dark"] .theme-img--light { display: none; }
+html[data-theme="dark"] .theme-img--dark { display: block; }
+
+/* 01 forma: kartica miruje pod pokazivačem (nagib bi smetao pri kucanju). */
+.kf-card.g-card { transform: none; }
+.kf-card.g-card--tab { margin-bottom: 30px; }
+.kf-card .form-note { margin-bottom: 0; }
+.kf-card .form-msg { margin: var(--sp-5) 0 0; }
+/* upit iz kalkulatora nije poslat: „Pokušaj ponovo“ / „Pošalji iz programa za e-poštu“ (krug 10) */
+.form-msg p { margin: 0; }
+.form-msg .form-msg__acts { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-4); }
+.kf-card .g-card__tab .field__count { display: inline; margin: 0; color: inherit; }
+.kf-card .g-card__tab .field__count.is-near { color: var(--accent); }
+@media (max-width: 767px) {
+  /* Jezičak dole desno ne sme da legne preko napomene ispod dugmeta. */
+  .kf-card.g-card { padding-bottom: calc(var(--gp) + 14px); }
+}
+
+/* 01 podaci: staklene kartice, gušći padding od podrazumevanog za .g-card. */
+.kf-info.g-card { --gp: clamp(20px, 2vw, 28px); height: auto; }
+.kf-info.g-card:hover { border-color: var(--line-strong); }
+
+/* Kapsule sa renderima (desni stubac forme: kotur; uslovi: kuća na kiši). */
+.kf-cap {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  background: var(--cine-1);
+  box-shadow: var(--glass-shadow);
+}
+.kf-cap--b { aspect-ratio: 16 / 10; }
+.kf-cap > picture { position: absolute; inset: 0; }
+.kf-cap img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* 03 lokacije: staklo umesto punog L1 panela; mapa i podaci ostaju unutra. */
+.locs > .g-card {
+  padding: 0;
+  overflow: hidden;
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+}
+.locs > .g-card .infoblock { position: relative; background: transparent; padding-top: calc(var(--sp-5) + 6px); }
+.kf-pin {
+  position: absolute;
+  right: clamp(20px, 2vw, 28px);
+  top: -22px;
+  z-index: 2;
+  background: var(--glass-fill-2);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+}
+
+/* ===== FORGED: o-nama + 404 ===== */
+/* Render po temi: oba <picture> stoje u markupu (.img-light / .img-dark), CSS
+   pokazuje jedan — tema je html[data-theme], ne media upit. Skrivena slika je
+   loading="lazy", pa se ne preuzima dok je display:none. */
+.theme-img .img-dark { display: none; }
+html[data-theme="dark"] .theme-img .img-light { display: none; }
+html[data-theme="dark"] .theme-img .img-dark { display: block; }
+
+/* Kapsule sa renderom (.shape-a/b/c seče okvir; senku bi isekao, pa je nema):
+   tamna ploča ispod, slika puni okvir. */
+.about-fig {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 3 / 2;
+  background: var(--cine-1);
+}
+.about-fig picture, .about-fig img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.about-fig img { object-fit: cover; }
+.about-fig--wide { aspect-ratio: 16 / 10; }
+.about-xray { aspect-ratio: 16 / 7; }
+.about-pano { aspect-ratio: 21 / 9; }
+@media (max-width: 768px) { .about-xray, .about-pano { aspect-ratio: 4 / 3; } }
+
+/* 01 — staklena kartica sadržaja i staklen ram oko kapsule u lepljivoj koloni */
+.tocnav.g-card { --gp: 14px; border-left: 0; padding: 10px var(--gp); }
+.tocnav.g-card a { padding-left: 14px; }
+.tocnav.g-card a::before { left: 0; }
+.tocnav.g-card a:hover, .tocnav.g-card a.is-active { padding-left: 22px; }
+.about-frame { --gp: 10px; padding: var(--gp); }
+.about-frame .about-fig { aspect-ratio: 4 / 3; }
+
+/* 02 / 07 / 08 — .card nosi i .g-card (sjaj, nagib); vrati prostor za redni broj */
+#sve-na-jednom-mestu .card.g-card, #zajednica .card.g-card, #mediji .card.g-card { padding: calc(var(--gp) + 18px) var(--gp) var(--gp); }
+#sve-na-jednom-mestu .card.g-card::before, #zajednica .card.g-card::before, #mediji .card.g-card::before { left: var(--gp); }
+
+/* 03 — vremenska linija kao jedna staklena kolona: šina i čvorovi unutra */
+.about-tl {
+  position: relative;
+  isolation: isolate;
+  padding: var(--sp-4) var(--sp-5) var(--sp-6) calc(30px + var(--sp-5));
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-l);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+}
+.about-tl .timeline__rail { left: calc(5px + var(--sp-5)); top: calc(var(--sp-4) + 8px); bottom: calc(var(--sp-6) + 8px); }
+.about-tl .tl-item:first-child { border-top: 0; }
+.about-tl .tl-item::before { box-shadow: 0 0 0 3px var(--glass-fill-solid); }
+.about-tl .tl-item.is-in::before { box-shadow: 0 0 0 3px var(--glass-fill-solid), 0 0 0 6px var(--accent-soft); }
+@media (min-width: 760px) {
+  .about-tl { padding-left: calc(190px + var(--sp-6)); padding-right: var(--sp-7); }
+  .about-tl .timeline__rail { left: calc(158px + var(--sp-6)); }
+}
+
+/* 04 — kapaciteti kao numerisani tehnički redovi na tamnom panelu */
+.about-trows { border-top-color: var(--glass-stroke); }
+.about-trows .trow { border-bottom-color: var(--glass-stroke); }
+.trow__body .about-val {
+  font-family: var(--ff-display);
+  font-size: clamp(1.5rem, 1rem + 1.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--fg-strong);
+  margin-bottom: 8px;
+  max-width: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 404 — vodeni žig „404“ nad lomljenim čelikom; .emptyhead u layout.css
+   postavlja shorthand background, pa recept .bd-steel ide ovde eksplicitno
+   (boja podloge ostaje --cine-2: traka je tamna u obe teme). */
+.emptyhead.bd-steel {
+  --bd-op: .18;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 80% at 50% 45%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(180deg, var(--cine-1) 0%, var(--cine-3) 100%);
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+.empty__code span { display: block; will-change: transform; }
+.empty__links.pill-row { justify-content: center; gap: 8px; margin-top: var(--sp-6); }
+.empty__links .pill { color: var(--cine-fg); border-bottom: 1px solid var(--glass-stroke); padding-bottom: 0; }
+.empty__links .pill:hover { color: var(--cine-fg); background: var(--glass-fill-2); border-color: var(--line-strong); }
+
+/* ===== FORGED: usluge + plazma ===== */
+/* Slike zavisne od teme (isti ugovor kao u blokovima proizvodi/kontakt):
+   dve <picture class="theme-img theme-img--light|--dark">, vidljiva ona za
+   tekuću temu; na tamnom panelu ide samo -dark render bez prekidača. */
+html[data-theme="dark"] .theme-img--light { display: none; }
+html:not([data-theme="dark"]) .theme-img--dark { display: none; }
+
+/* 01 — četrnaest usluga: jedan L1 panel (.g-card--solid) sa numerisanim
+   tehničkim redovima (.trow): broj · linijski crtež · naslov + tekst · dve
+   mono anotacije sa vođicom · strelica. Klase .slist/.srow ostaju zbog
+   postojećih kuka; ovde se prepisuje njihov raniji raspored kartica. */
+.svc-panel { padding: 8px var(--gp); transform: none !important; }
+.svc-panel .slist { display: block; gap: 0; }
+.svc-panel .slist.trows { border-top: 0; }
+.svc-panel .srow {
+  display: grid;
+  grid-template-columns: 72px 160px minmax(0, 1fr) 240px;
+  gap: var(--sp-4) var(--sp-5);
+  align-items: start;
+  min-height: 0;
+  padding: var(--sp-6) 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+}
+.svc-panel .srow:last-child { border-bottom: 0; }
+.svc-panel .srow:hover { background: none; border-color: var(--line); box-shadow: none; }
+.svc-panel .srow .srow__no {
+  position: static;
+  font-size: var(--t-xl);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  line-height: 1;
+  color: var(--accent);
+}
+.svc-panel .srow__t, .svc-panel .srow__d { display: block; }
+.svc-panel .srow__t { font-size: var(--t-lg); max-width: none; margin-bottom: 8px; }
+.svc-panel .srow__d { font-size: var(--t-base); max-width: 52ch; }
+.svc-panel .srow .srow__go { top: calc(var(--sp-6) + 2px); right: 0; }
+.svc-panel .trow__anno { padding-right: 28px; }
+.svc-panel .trow__svg { color: var(--fg-strong); }
+@media (max-width: 960px) {
+  .svc-panel .srow { grid-template-columns: 72px minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .svc-panel .srow { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); padding: var(--sp-5) 0; }
+  .svc-panel .srow .srow__no { font-size: var(--t-lg); }
+  .svc-panel .srow .srow__go { top: var(--sp-5); }
+}
+
+/* Kapsule sa renderima (.shape-a/b/c nose clip-path; slika popunjava okvir). */
+.svc-cap { position: relative; aspect-ratio: 3 / 2; background: var(--surface-3); overflow: hidden; }
+.svc-cap--tall { aspect-ratio: 4 / 3; }
+.svc-cap--pill { aspect-ratio: 5 / 2; }
+.svc-cap > picture { position: absolute; inset: 0; width: 100%; height: 100%; }
+.svc-cap img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.svc-cap--pill img { object-position: 50% 42%; }
+/* Par „proizvod + rendgenski blizanac“ (plazma 02) i dva rendera u tamnom panelu (usluge 05). */
+.svc-twin { display: grid; gap: var(--sp-4); align-content: start; }
+.svc-twin .figcap { margin-top: 4px; }
+
+/* Kartice profila (04): render umesto fotografije — bez foto-tinte i mreže. */
+.svc-fig::before { content: none; }
+.svc-fig > picture { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; }
+.svc-fig img { filter: none; }
+
+/* Datasheet mašina/postupaka u staklu: .caps lista ili katalog tabela. */
+.svc-sheet { padding: 0 var(--sp-5); }
+.svc-sheet > .caps { border-top: 0; }
+.svc-sheet .cap:last-child { border-bottom: 0; }
+.svc-sheet .cap:hover { background: none; }
+.svc-machines { padding: var(--sp-4) var(--sp-5) 0; }
+.svc-machines .u-mb-24:last-child { margin-bottom: 0; }
+.svc-machines .spec-wrap { max-height: none; overflow-y: visible; }
+
+/* Plazma 03 — traka ikona: pet staklenih kartica (DXF · PDF · skica · uzorak
+   · materijal) sa linijskom ikonom gore, brojem gore desno i tekstom koraka. */
+.numrow.pstrip { gap: var(--col-gap); border-top: 0; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px)  { .numrow.pstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px)  { .numrow.pstrip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .numrow.pstrip { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.numrow.pstrip > .card {
+  position: relative;
+  padding: var(--sp-5);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-left: 1px solid var(--glass-stroke);
+  border-bottom: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+}
+.numrow.pstrip > .card:first-child { padding-left: var(--sp-5); }
+.numrow.pstrip > .card:hover { background: var(--glass-fill-2); border-color: var(--line-strong); }
+.numrow.pstrip > .card::before,
+.numrow.pstrip > .card:first-child::before { top: 18px; left: auto; right: var(--sp-5); font-size: var(--t-label); color: var(--fg-faint); }
+.pstrip .card__icon { position: static; width: 72px; height: 54px; margin: 0 0 var(--sp-4); color: var(--fg-strong); }
+.pstrip .card__icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.pstrip .card h3 { font-size: var(--t-md); }
+.pstrip .card p { font-size: var(--t-sm); }
+.pstrip .checklist { margin-top: 2px; }
+.pstrip .checklist li { font-size: var(--t-sm); margin-bottom: 10px; padding-left: 26px; }
+.pstrip .checklist li::before { top: 3px; width: 14px; height: 14px; }
+.pstrip .checklist li::after { left: 4px; top: 6px; width: 4px; height: 8px; }
+
+/* ===== FORGED: reference + galerija ===== */
+/* Renderi u paru svetlo/tamno: dve <picture> (.rg-pic--light/--dark), CSS
+   prikazuje onu koja odgovara temi; skrivena (display:none) se ne učitava. */
+.rg-pic--dark { display: none; }
+html[data-theme="dark"] .rg-pic--light { display: none; }
+html[data-theme="dark"] .rg-pic--dark { display: block; }
+
+/* Kapsulni okvir za render (kartice 02 i zaglavlje odeljka 03 na referencama);
+   oblik daje .shape-a/b/c, do 768 px pada na --r-l. */
+.rg-cap { position: relative; margin: 0; aspect-ratio: 16 / 10; background: var(--cine-1); border-radius: var(--r-m); overflow: hidden; }
+.rg-cap picture, .rg-cap img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rg-cap img { display: block; object-fit: cover; }
+
+/* 01 Karađorđevo: čelična kapsula (kao .kcta) u obe teme — render u .shape-a
+   desno, dva brojača kao staklene kartice (.refstat.g-card). */
+.refhero { margin-inline: 0; padding: var(--sp-7) var(--sp-5); border: 1px solid var(--glass-stroke); border-radius: var(--r-xl); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow); }
+.refhero::before { left: var(--sp-5); }
+@media (min-width: 960px) {
+  .refhero { padding: var(--sp-8); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-8); }
+  .refhero::before { left: var(--sp-8); }
+}
+.refhero__media { position: relative; aspect-ratio: 16 / 10; background: var(--cine-1); align-self: center; }
+.refhero__media picture, .refhero__media img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.refhero__media img { display: block; object-fit: cover; }
+.refhero .refstat.g-card { --gp: 18px 22px 16px; flex: 1 1 200px; border-radius: var(--r-m); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm); }
+
+/* 03 Lista objekata: JEDAN stakleni panel (jedno zamućenje), ćelije sa
+   hairline-om, bleda numeracija gore desno, kategorija kao mono pilula. */
+.reflist { counter-reset: ref; background: var(--glass-fill); border-color: var(--glass-stroke); border-radius: var(--r-xl); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow); -webkit-backdrop-filter: var(--glass-bf); backdrop-filter: var(--glass-bf); }
+.reflist > .ref { background: transparent; counter-increment: ref; box-shadow: 0 0 0 1px var(--glass-stroke); padding: var(--sp-5); }
+.reflist > .ref:hover { background: var(--glass-fill-2); box-shadow: 0 0 0 1px var(--line-strong); }
+.reflist > .ref::before { content: counter(ref, decimal-leading-zero); position: absolute; top: 12px; right: 16px; font-family: var(--ff-display); font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; color: var(--fg-strong); opacity: .07; pointer-events: none; }
+.reflist .ref__n { padding-right: 64px; }
+.reflist .ref__k.pill { display: inline-flex; height: auto; min-height: 30px; padding: 6px 12px; margin-top: 16px; border: 1px solid var(--glass-stroke); border-radius: var(--r-pill); background: var(--glass-fill-2); box-shadow: inset 0 1px 0 var(--glass-highlight); color: var(--fg-muted); white-space: normal; line-height: 1.3; text-align: left; }
+
+/* 04 Partneri i objekti: jedan rasklopivi stakleni panel (<details class="g-card">),
+   summary kao staklena pilula; .marquee ostaje kao hook, stavke su pilule. */
+.rg-panel { padding: 0; }
+.rg-panel > summary { list-style: none; cursor: pointer; margin: var(--gp); width: max-content; max-width: calc(100% - 2 * var(--gp)); }
+.rg-panel > summary::-webkit-details-marker { display: none; }
+.rg-panel > summary svg.ico--static { transition: transform var(--dur) var(--ease); }
+.rg-panel[open] > summary svg.ico--static { transform: rotate(180deg); }
+.rg-panel__body { padding: 0 var(--gp) var(--gp); }
+.rg-panel .marquee { border-top: 0; }
+.rg-panel .marquee__track { display: flex; flex-wrap: wrap; gap: 8px; }
+.rg-panel .marquee__item { height: 36px; padding: 0 14px; border: 1px solid var(--glass-stroke); border-radius: var(--r-pill); background: var(--glass-fill-2); box-shadow: inset 0 1px 0 var(--glass-highlight); font-family: var(--ff-mono); font-size: var(--t-label); font-weight: 500; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fg-muted); }
+.rg-panel .marquee__item:hover { color: var(--fg-strong); border-color: var(--line-strong); }
+.rg-panel .more { border-top-color: var(--glass-stroke); border-bottom: 0; padding-bottom: 0; }
+
+/* Galerija: renderi kao kapsulne pločice — staklen okvir, bez foto-tona
+   (to su studijski renderi, ne fotografije), široke pločice u mozaiku;
+   dense popunjava rupe koje široka pločica ostavi pri prelamanju. */
+.gallery { grid-auto-flow: dense; }
+.gallery > .gitem { align-self: stretch; }
+.gitem--render { background: var(--glass-fill-solid); box-shadow: inset 0 1px 0 var(--glass-highlight); }
+.gitem--render::before { display: none; }
+.gitem--render > picture { position: absolute; inset: 0; z-index: 0; }
+.gitem--render img { display: block; width: 100%; height: 100%; object-fit: cover; filter: none; }
+.gitem--render.gitem--wide { grid-column: span 2; aspect-ratio: 8 / 3; }
+
+/* ===== FORGED: index ===== */
+/* Početna (index.html / en/index.html), telo ispod heroja: brojevi na traci
+   lomljenog čelika, tročlana vitrina programa (Kontra), prikovane sekcije sa
+   renderima u kapsulama, rendgenska kuća umesto fotografija. Slike po temi
+   koriste isti ugovor .theme-img.theme-img--light|--dark (blok proizvodi).
+   Kuke (.pin/.pin__stick/[data-pin-reveal], [data-count], .process/.step,
+   .marquee, .acc, .lineup/.prog, .refstat) su netaknute.
+   Isključivanje: obrisati blok i klase hm-* iz markupa. */
+
+/* 01 — tamna traka (.dark.bd-steel na .section--tight): četiri .stat.g-card
+   zadržavaju gušći padding i redni broj gore levo; traka diše kao puna sekcija. */
+.hm-stats { padding-block: calc(var(--section-y) * .75); }
+.hm-stats .stat.g-card { padding: calc(var(--sp-6) + 18px) var(--sp-5) var(--sp-6); }
+.hm-stats .stat__lbl { color: var(--fg); opacity: .82; }
+
+/* 02 — vitrina: sredina TR 35 u kapsuli .shape-b (3 / 6 / 3 kolone), levo i
+   desno manje staklene kartice sa renderom, nazivom grupe i pilulama oznaka. */
+.hm-show { display: grid; gap: var(--sp-5); margin-bottom: var(--sp-7); }
+@media (min-width: 960px) {
+  .hm-show { grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr); column-gap: var(--col-gap); align-items: center; }
+}
+.hm-show__mid { display: grid; gap: 14px; }
+.hm-show__main { position: relative; display: block; aspect-ratio: 16 / 10; background: var(--cine-1); }
+.hm-show__main > picture { position: absolute; inset: 0; }
+.hm-show .hm-show__tag { position: absolute; top: 24px; left: 28px; z-index: 1; height: 32px; padding: 0 14px; background: var(--glass-fill-solid); color: var(--fg-strong); }
+@media (min-width: 769px) { .hm-show .hm-show__tag { top: 48px; left: 48px; } }
+.hm-show__mid > .pill-row { justify-content: center; }
+.hm-show__side { --gp: 12px; display: flex; flex-direction: column; gap: 12px; padding: var(--gp); color: inherit; text-decoration: none; }
+.hm-show__ph { position: relative; aspect-ratio: 16 / 10; border-radius: calc(var(--r-l) - var(--gp)); overflow: hidden; background: var(--surface-2); }
+.hm-show__ph > picture { position: absolute; inset: 0; }
+.hm-show__b { padding: 2px 8px 8px; }
+.hm-show__n { font-family: var(--ff-display); font-size: var(--t-md); font-weight: 700; letter-spacing: 0; color: var(--fg-strong); margin-bottom: 10px; }
+.hm-show .pill-row { gap: 6px; }
+.hm-show .pill { height: 28px; padding: 0 10px; font-family: var(--ff-mono); font-size: var(--t-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--fg-faint); background: var(--glass-fill-2); }
+.hm-show__side:hover .hm-show__n { color: var(--accent); }
+@media (max-width: 959px) { .hm-show__mid { order: -1; } }
+
+/* 01 — „Naši proizvodi“ (izmene klijenta, krug 3): kartica sa krupnom slikom po
+   grupi (app/site/products.php, site_home_groups) — naziv grupe iz baze, veza
+   na tab grupe. 1 / 2 / 3 kolone; sve grupe vidljive i na telefonu. */
+.hm-groups { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); }
+@media (min-width: 600px) { .hm-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .hm-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hm-group { --gp: 10px; display: flex; flex-direction: column; padding: var(--gp); color: inherit; text-decoration: none; }
+.hm-group__ph { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: calc(var(--g-r, var(--r-l)) - var(--gp)); overflow: hidden; background-color: var(--glass-fill); }
+.hm-group__ph > picture, .hm-group__ph > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hm-group__ph img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur) var(--ease); }
+.hm-group:hover .hm-group__ph img { transform: scale(1.04); }
+.hm-group__draw { position: absolute; inset: 14% 16%; display: grid; place-items: center; color: var(--fg-muted); }
+.hm-group__draw svg { width: 100%; height: 100%; }
+.hm-group__b { display: flex; flex-direction: column; gap: 10px; padding: 16px 10px 10px; }
+.hm-group__n { margin: 0; font-family: var(--ff-display); font-size: clamp(1.25rem, 1.05rem + .6vw, 1.6rem); font-weight: 700; line-height: 1.15; letter-spacing: 0; color: var(--fg-strong); }
+.hm-group:hover .hm-group__n { color: var(--accent); }
+.hm-group__go { align-self: flex-start; }
+.hm-group:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .hm-group__ph img { transition: none; } .hm-group:hover .hm-group__ph img { transform: none; } }
+
+/* oznaka „NOVO“ uz 3D konfigurator na početnoj */
+.kcta__new { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 10.5px; font-weight: 700; letter-spacing: .12em; }
+
+/* 03 — „Tri načina“: tamna čelična ploča u obliku .shape-b, scena uvučena u
+   ploču (jezičak dole levo ostaje čelik); kartice su .card.g-card i ulaze
+   zdesna po --p (motion.css). */
+.hm-tri {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background-color: var(--glass-fill);
+}
+:where(html[data-theme="dark"]) .hm-tri {
+  --bd-op: .18;
+  background-color: var(--cine-2);
+  background-image:
+    radial-gradient(ellipse 90% 90% at 40% 40%, rgba(11, 14, 19, calc(1 - var(--bd-op))) 0%, rgba(11, 14, 19, calc(1 - var(--bd-op) * .5)) 55%, rgba(11, 14, 19, 1) 100%),
+    var(--bg-steel),
+    linear-gradient(180deg, var(--cine-1), var(--cine-3));
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+}
+.hm-tri__ph { position: absolute; inset: 12px 12px calc(16% + 8px); border-radius: calc(var(--r-l) - 12px); overflow: hidden; background: var(--cine-1); }
+.hm-tri__ph > picture { position: absolute; inset: 0; }
+@media (max-width: 768px) { .hm-tri__ph { inset: 10px; border-radius: calc(var(--r-l) - 10px); } }
+.hm-cards > .card.g-card { padding: calc(var(--gp) + 18px) var(--gp) var(--gp); }
+.hm-cards > .card.g-card::before { left: var(--gp); }
+
+/* 04 — CNC: rendgenska kuća u kapsuli .shape-a, mala staklena kartica sa
+   plazma pločom preko donjeg levog ugla; omotač nosi [data-pin-reveal]
+   (maska sleva nadesno), pa oblik kapsule ostaje netaknut. */
+.split > .hm-cnc { height: auto; display: block; position: relative; padding-bottom: 13%; }
+.hm-xray { position: relative; aspect-ratio: 16 / 10; background: var(--cine-1); }
+.hm-xray > picture { position: absolute; inset: 0; }
+.hm-plate {
+  position: absolute; left: 0; bottom: 0; z-index: 1;
+  width: 44%; padding: 8px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+}
+.hm-plate > picture { position: relative; display: block; aspect-ratio: 16 / 10; border-radius: calc(var(--r-m) - 8px); overflow: hidden; background: var(--cine-1); }
+.hm-caps.tbl-glass { padding: 0 var(--sp-5); overflow: hidden; }
+.hm-caps > .caps { border-top: 0; }
+.hm-caps .cap:last-child { border-bottom: 0; }
+.hm-caps .cap:hover { background: none; }
+
+/* 05 — rastavljeni list: crtež leži na ploči .shape-b sa nacrtnom mrežom. */
+.hm-xplode .xplode__fig { margin-top: 0; padding: 6% 7% 10%; }
+.hm-xplode .xplode__fig::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  clip-path: url(#shape-b);
+  background-color: var(--surface-2);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+html[data-theme="dark"] .hm-xplode .xplode__fig::before { background-color: var(--cine-2); }
+@media (max-width: 768px) { .hm-xplode .xplode__fig::before { clip-path: none; border-radius: var(--r-m); } }
+
+/* 06 / 07 / 09 — kapsule sa renderom u zaglavljima sekcija (.shape-a/b/c);
+   .refhero preuzima .refhero__media i .refstat.g-card iz bloka reference;
+   partneri (.marquee ostaje kuka) kao red pilula. */
+.hm-cap { position: relative; aspect-ratio: 16 / 10; background: var(--cine-1); }
+.hm-cap > picture { position: absolute; inset: 0; }
+.hm-cap img, .hm-xray img, .hm-plate img, .hm-tri__ph img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Svetla tema: nosači rendera i fotografija dobijaju svetlu podlogu (dok slika ne
+   stigne nema tamnog pravougaonika); u tamnoj ostaje --cine-1. */
+html:not([data-theme="dark"]) :is(.kcta__art--render, .kf-cap, .about-fig, .rg-cap, .refhero__media, .hm-show__main, .hm-tri__ph, .hm-xray, .hm-plate > picture, .hm-cap) { background-color: var(--surface-3); }
+.hm-cap--pano { aspect-ratio: 21 / 9; }
+.hm-cap--c { aspect-ratio: 5 / 3; }
+@media (max-width: 768px) { .hm-cap--pano { aspect-ratio: 16 / 9; } }
+.marquee.hm-pills { border-top: 0; }
+.hm-pills .marquee__track { display: flex; flex-wrap: wrap; gap: 8px; }
+.hm-pills .marquee__item {
+  height: 36px; padding: 0 14px; border-bottom: 0;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-pill);
+  background: var(--glass-fill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  font-family: var(--ff-mono); font-size: var(--t-label); font-weight: 500;
+  letter-spacing: var(--track-label); text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.hm-pills .marquee__item:hover { color: var(--fg-strong); border-color: var(--line-strong); }

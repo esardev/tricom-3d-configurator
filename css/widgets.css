@@ -1,0 +1,493 @@
+/* ==========================================================================
+   TRICOM — widgets.css
+   Plutajući dok: AI asistent (dole levo) + Nazad na vrh (dole desno)
+   Oba dugmeta su hairline pilule iste veličine, u boji teme.
+   ========================================================================== */
+
+/* Ista porodica kao prekidač teme i jezika: 40 px hairline pilula. */
+:root {
+  --dock-size: 40px;
+  --dock-gap: 16px;
+}
+@media (min-width: 768px) {
+  :root { --dock-gap: 24px; }
+}
+
+/* Zajednički kontejner koji drži oba dugmeta u istoj liniji */
+.dock {
+  position: fixed;
+  left: var(--dock-gap);
+  right: var(--dock-gap);
+  bottom: var(--dock-gap);
+  height: var(--dock-size);
+  z-index: var(--z-dock);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.dock > * { pointer-events: auto; }
+
+/* --------------------------------------------------------------------------
+   Zajednički stil dugmeta — okrugla hairline pilula, bez senke
+   -------------------------------------------------------------------------- */
+/* Forged Glass: staklene pilule (L3) — fill-2, 1 px svetla linija na vrhu,
+   blur-sm, meka senka. */
+.dock-btn {
+  position: relative;
+  width: var(--dock-size);
+  height: var(--dock-size);
+  display: grid;
+  place-items: center;
+  background: var(--glass-fill-2);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  -webkit-backdrop-filter: var(--glass-bf-sm);
+          backdrop-filter: var(--glass-bf-sm);
+  color: var(--fg-strong);
+  transition: border-color var(--dur-fast) var(--ease), opacity var(--dur) var(--ease),
+              visibility var(--dur), color var(--dur-fast) var(--ease);
+}
+.dock-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Nazad na vrh — sa prstenom napretka skrola
+   -------------------------------------------------------------------------- */
+.totop {
+  opacity: 0;
+  visibility: hidden;
+}
+.totop.is-visible { opacity: 1; visibility: visible; }
+
+.totop__ring {
+  position: absolute;
+  inset: -1px;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.totop__ring circle {
+  fill: none;
+  stroke-width: 1.5;
+}
+.totop__ring .bg { stroke: transparent; }
+.totop__ring .fg {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: var(--circ, 176);
+  stroke-dashoffset: var(--circ, 176);
+  transition: stroke-dashoffset var(--dur-fast) var(--ease);
+}
+
+.totop__arrow {
+  width: 16px; height: 16px;
+  transition: transform var(--dur) var(--ease);
+}
+.totop:hover .totop__arrow { transform: translateY(-3px); }
+
+.totop__pct {
+  position: absolute;
+  bottom: -19px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  color: var(--fg-faint);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity var(--dur);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.totop:hover .totop__pct { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   AI asistent — dugme
+   -------------------------------------------------------------------------- */
+.ai-fab { overflow: visible; }
+.ai-fab__icon {
+  width: 20px; height: 20px;
+  transition: transform var(--dur) var(--ease), opacity var(--dur-fast);
+}
+.ai-fab__close {
+  position: absolute;
+  width: 16px; height: 16px;
+  opacity: 0;
+  transform: rotate(-45deg) scale(.6);
+  transition: transform var(--dur) var(--ease), opacity var(--dur-fast);
+}
+.ai-fab.is-open .ai-fab__icon { opacity: 0; transform: scale(.6) rotate(45deg); }
+.ai-fab.is-open .ai-fab__close { opacity: 1; transform: rotate(0) scale(1); }
+
+/* Puls kada asistent "ima nešto da kaže" — tri talasa, pa miruje
+   (bez neprekidnih animacija van hero platna). */
+.ai-fab::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.ai-fab.is-pinging::after { animation: fabPing 2.2s var(--ease) 3; }
+@keyframes fabPing {
+  0%   { opacity: .7; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.45); }
+  100% { opacity: 0;  transform: scale(1.45); }
+}
+
+.ai-fab__dot {
+  position: absolute;
+  top: 0; right: 0;
+  width: 10px; height: 10px;
+  background: var(--spark);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0);
+  transition: all var(--dur) var(--ease);
+}
+.ai-fab.is-pinging .ai-fab__dot { opacity: 1; transform: scale(1); }
+.ai-fab.is-open .ai-fab__dot { opacity: 0; transform: scale(0); }
+
+/* Oblačić poziva */
+.ai-nudge {
+  position: absolute;
+  left: calc(100% + 12px);
+  bottom: 7px;
+  background: var(--glass-fill-2);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-s);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow-sm);
+  -webkit-backdrop-filter: var(--glass-bf-sm);
+          backdrop-filter: var(--glass-bf-sm);
+  padding: 11px 14px;
+  font-size: var(--t-sm);
+  color: var(--fg);
+  /* width: max-content drži jedan red dok ne udari u max-width. */
+  width: max-content;
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: all var(--dur) var(--ease);
+  max-width: min(62vw, 260px);
+}
+.ai-nudge::before {
+  content: '';
+  position: absolute;
+  left: -5px; bottom: 16px;
+  width: 8px; height: 8px;
+  background: var(--glass-fill-solid);
+  border-left: 1px solid var(--glass-stroke);
+  border-bottom: 1px solid var(--glass-stroke);
+  transform: rotate(45deg);
+}
+.ai-nudge.is-visible { opacity: 1; visibility: visible; transform: none; }
+.ai-nudge b { color: var(--accent); font-weight: 600; }
+.ai-nudge__x {
+  margin-left: 10px;
+  color: var(--fg-muted);
+  font-size: 13px;
+  line-height: 1;
+  vertical-align: middle;
+}
+.ai-nudge__x:hover { color: var(--fg-strong); }
+
+/* --------------------------------------------------------------------------
+   AI asistent — panel
+   -------------------------------------------------------------------------- */
+.ai-panel {
+  position: fixed;
+  z-index: var(--z-panel);
+  left: var(--dock-gap);
+  right: var(--dock-gap);
+  bottom: calc(var(--dock-gap) + var(--dock-size) + 12px);
+  max-height: min(640px, calc(100svh - var(--dock-size) - 4rem));
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-fill-2);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-m);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-bf);
+          backdrop-filter: var(--glass-bf);
+  isolation: isolate;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px) scale(.98);
+  transform-origin: left bottom;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur);
+  overflow: hidden;
+}
+@media (min-width: 560px) {
+  .ai-panel { right: auto; width: 396px; }
+}
+.ai-panel.is-open { opacity: 1; visibility: visible; transform: none; }
+
+/* Zaglavlje */
+.ai-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  flex: none;
+}
+.ai-head__av {
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-radius: 50%;
+  flex: none;
+  position: relative;
+}
+.ai-head__av svg { width: 20px; height: 20px; }
+.ai-head__av::after {
+  content: '';
+  position: absolute;
+  right: -2px; bottom: -2px;
+  width: 9px; height: 9px;
+  background: var(--ok-deep);
+  border: 2px solid var(--glass-fill-solid);
+  border-radius: 50%;
+}
+.ai-head__t { flex: 1; min-width: 0; }
+.ai-head__t b {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: var(--t-base);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  color: var(--fg-strong);
+}
+.ai-head__t span {
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  color: var(--fg-faint);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+.ai-head__btn {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  color: var(--fg-faint);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transition: all var(--dur-fast);
+  flex: none;
+}
+.ai-head__btn:hover { color: var(--fg-strong); border-color: var(--line-strong); }
+.ai-head__btn svg { width: 14px; height: 14px; }
+
+/* Telo poruka */
+.ai-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+  min-height: 220px;
+  background: transparent;
+}
+.ai-body::-webkit-scrollbar { width: 6px; }
+.ai-body::-webkit-scrollbar-thumb { background: var(--line-strong); }
+
+.msg {
+  max-width: 88%;
+  font-size: var(--t-sm);
+  line-height: 1.6;
+  padding: 11px 14px;
+  border-radius: var(--r-s);
+  animation: msgIn var(--dur) var(--ease);
+}
+@keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.msg--bot {
+  align-self: flex-start;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-left: 2px solid var(--accent);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  color: var(--fg);
+}
+.msg--user {
+  align-self: flex-end;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand);
+}
+.msg strong { color: var(--fg-strong); font-weight: 600; }
+.msg--user strong { color: var(--white); }
+.msg a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.msg--user a { color: var(--white); }
+.msg p { max-width: none; }
+.msg ul { margin: 8px 0 2px; }
+.msg li { position: relative; padding-left: 15px; margin-bottom: 5px; }
+.msg li::before {
+  content: ''; position: absolute; left: 0; top: 10px;
+  width: 7px; height: 1px; background: var(--accent);
+}
+.msg--user li::before { background: var(--cine-fg-70); }
+.msg .mono { display: inline-block; color: var(--accent); }
+.msg--user .mono { color: var(--arc-200); }
+
+/* Akcije unutar poruke */
+.msg__acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+.msg__act {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-pill);
+  color: var(--accent);
+  background: var(--glass-fill);
+  transition: all var(--dur-fast);
+}
+.msg__act:hover { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.msg__act svg { width: 12px; height: 12px; }
+
+/* Indikator kucanja */
+.typing {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 4px;
+  padding: 14px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-left: 2px solid var(--accent);
+  border-radius: var(--r-s);
+}
+.typing i {
+  width: 5px; height: 5px;
+  background: var(--fg-faint);
+  border-radius: 50%;
+  animation: typeBounce 1.3s infinite;
+}
+.typing i:nth-child(2) { animation-delay: .16s; }
+.typing i:nth-child(3) { animation-delay: .32s; }
+@keyframes typeBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: .45; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Brzi predlozi */
+.ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 12px;
+  flex: none;
+  background: transparent;
+}
+/* Čipovi = male staklene pilule (L3). */
+.ai-chip {
+  font-size: 11px;
+  padding: 7px 12px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  color: var(--fg-muted);
+  transition: all var(--dur-fast);
+  text-align: left;
+}
+.ai-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Unos */
+.ai-form {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  flex: none;
+  align-items: flex-end;
+}
+.ai-form textarea {
+  flex: 1;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  border-radius: var(--r-pill);
+  color: var(--fg-strong);
+  padding: 11px 15px;
+  font-size: var(--t-sm);
+  resize: none;
+  max-height: 96px;
+  min-height: 44px;
+  line-height: 1.45;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.ai-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 0 0 4px var(--accent-soft);
+}
+.ai-form textarea::placeholder { color: var(--fg-faint); }
+.ai-send {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-radius: 50%;
+  flex: none;
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast);
+}
+.ai-send:hover { background: var(--brand-hover); transform: translateY(-2px); }
+.ai-send:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+.ai-send svg { width: 17px; height: 17px; }
+
+.ai-foot {
+  padding: 0 16px 12px;
+  font-family: var(--ff-mono);
+  font-size: var(--t-label);
+  color: var(--fg-faint);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  text-align: center;
+  background: transparent;
+  flex: none;
+  line-height: 1.5;
+  max-width: none;
+}
+
+/* Mobilno — panel preko skoro celog ekrana */
+@media (max-width: 559px) {
+  .ai-panel {
+    bottom: calc(var(--dock-gap) + var(--dock-size) + 10px);
+    max-height: calc(100svh - var(--dock-size) - 3rem);
+  }
+  .ai-body { min-height: 180px; }
+}
+
+/* --------------------------------------------------------------------------
+   Oblačić asistenta na uskim ekranima — iznad dugmeta, sa lomljenjem teksta
+   -------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+  .ai-nudge {
+    left: 0;
+    right: auto;
+    bottom: calc(100% + 12px);
+    white-space: normal;
+    max-width: min(70vw, 250px);
+    line-height: 1.45;
+  }
+  .ai-nudge::before { left: 16px; bottom: -5px; top: auto; }
+}

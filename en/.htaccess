@@ -1,0 +1,34 @@
+# TRICOM — engleska verzija: nepostojeća adresa pod /en/ → engleska 404 strana
+ErrorDocument 404 /en/404.php
+
+# Strane iz baze (PHP) na istim adresama kao ranije — samo ove tačne putanje.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Kanonski domen https://tricom.rs — isti blok kao u korenom .htaccess (pravila
+  # korena ne važe ovde, jer ova fascikla ima sopstveni RewriteEngine).
+  # Stari tricom.co.rs, www.tricom.co.rs i www.tricom.rs → 301 na istu putanju i
+  # upit na https://tricom.rs; http://tricom.rs → https://. Cilj se nikad ne
+  # poklapa sa uslovom, pa nema petlje; drugi domeni (npr. lokalna proba) se ne diraju.
+  # Preduslov: stari domeni pokazuju na ovu fasciklu i svi imaju HTTPS sertifikat.
+  RewriteCond %{HTTP_HOST} ^(www\.)?tricom\.co\.rs\.?(:\d+)?$ [NC,OR]
+  RewriteCond %{HTTP_HOST} ^www\.tricom\.rs\.?(:\d+)?$ [NC]
+  RewriteRule ^ https://tricom.rs%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP_HOST} ^tricom\.rs\.?(:\d+)?$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+  RewriteRule ^ https://tricom.rs%{REQUEST_URI} [R=301,L]
+
+  RewriteRule ^(index\.html)?$ index.php [L]
+  RewriteRule ^about\.html$ about.php [L]
+  RewriteRule ^gallery\.html$ gallery.php [L]
+  RewriteRule ^contact\.html$ contact.php [L]
+  RewriteRule ^plasma-cutting\.html$ plasma-cutting.php [L]
+  RewriteRule ^calculators\.html$ calculators.php [L]
+  RewriteRule ^configurator\.html$ configurator.php [L]
+  RewriteRule ^404\.html$ 404.php [L]
+  RewriteRule ^products\.html$ products.php [L]
+  RewriteRule ^services\.html$ services.php [L]
+  RewriteRule ^references\.html$ references.php [L]
+  RewriteRule ^details/([a-z0-9-]+)\.html$ details.php?slug=$1 [L]
+</IfModule>

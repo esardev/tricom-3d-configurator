@@ -1,0 +1,203 @@
+/* ==========================================================================
+   TRICOM — modal.css
+   Ploča kartice (js/modal.js): staklo po receptu iz glass.css (ispuna
+   --g-bg-2, zamućenje --g-blur, zrno + odsjaj, gornja ivica, senka, radijus
+   --g-r). Podloga je boja podloge teme sa providnošću — u svetloj temi svetla,
+   u tamnoj tamna; nikad tamni pravougaonik preko svetle strane.
+   Ispod 640 px ploča je list preko celog ekrana.
+   ========================================================================== */
+
+.imodal {
+  position: fixed; inset: 0; z-index: 1200;
+  display: grid; place-items: center;
+  padding: clamp(16px, 4vw, 48px);
+}
+.imodal[hidden] { display: none; }
+.imodal__scrim {
+  position: absolute; inset: 0;
+  background: rgba(var(--bg-rgb), .72);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .28s var(--ease, ease);
+}
+.imodal.is-open .imodal__scrim { opacity: 1; }
+
+.imodal__panel {
+  position: relative;
+  width: min(1040px, 100%);
+  max-height: min(860px, calc(100vh - 2 * clamp(16px, 4vw, 48px)));
+  max-height: min(860px, calc(100dvh - 2 * clamp(16px, 4vw, 48px)));
+  overflow: auto; overscroll-behavior: contain;
+  border-radius: var(--g-r, 28px);
+  border: 1px solid var(--g-border);
+  background-color: var(--g-bg-2);
+  background-image: var(--g-grain), var(--g-sheen);
+  background-size: 160px 160px, 100% 100%;
+  -webkit-backdrop-filter: var(--g-blur); backdrop-filter: var(--g-blur);
+  box-shadow: var(--g-inset), var(--g-shadow), 0 40px 120px -60px rgba(10, 20, 60, .45);
+  color: var(--fg);
+  opacity: 0; transform: translateY(16px) scale(.985);
+  transition: opacity .3s var(--ease, ease), transform .42s cubic-bezier(.2, .7, .2, 1);
+}
+.imodal.is-open .imodal__panel { opacity: 1; transform: none; }
+.imodal__panel:focus { outline: none; }
+/* bez backdrop-filter-a: puna ispuna da tekst ostane čitljiv */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .imodal__panel { background-color: var(--g-solid); }
+}
+
+.imodal__in {
+  display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  min-height: 100%;
+}
+.imodal__media {
+  position: relative; margin: 0;
+  min-height: 320px;
+  border-right: 1px solid var(--g-border);
+  /* ista svetla studijska podloga kao renderi (belo → #E5E6E8), u tamnoj kao tamni renderi */
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 42%, #E5E6E8 100%);
+  display: grid; place-items: center;
+  overflow: hidden;
+  border-radius: var(--g-r, 28px) 0 0 var(--g-r, 28px);
+}
+html[data-theme="dark"] .imodal__media { background: linear-gradient(180deg, #0A0D12 0%, #0A0D12 45%, #06070B 100%); }
+.imodal__media picture, .imodal__media .im-photo { width: 100%; height: 100%; }
+.imodal__media img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.im-pic--dark { display: none; }
+html[data-theme="dark"] .im-pic--light { display: none; }
+html[data-theme="dark"] .im-pic--dark { display: block; }
+.im-illu { width: 72%; max-width: 360px; color: var(--accent); opacity: .85; }
+.im-illu svg { display: block; width: 100%; height: auto; }
+.im-illu--none { width: 100%; height: 100%; }
+
+.imodal__body {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: clamp(28px, 3.4vw, 44px) clamp(24px, 3vw, 40px) clamp(24px, 3vw, 36px);
+}
+.imodal__kicker { color: var(--fg-muted); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0; padding-right: 48px; }
+.imodal__t {
+  margin: 0; padding-right: 40px;
+  font-family: var(--ff-display); font-weight: 700;
+  font-size: clamp(26px, 2.6vw, 36px); line-height: 1.08; letter-spacing: -.02em;
+  color: var(--fg-strong, var(--fg));
+}
+.imodal__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.imodal__sum { margin: 0; color: var(--fg-muted); font-size: 16px; line-height: 1.6; max-width: 56ch; }
+.imodal__specs {
+  margin: 4px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-top: 1px solid var(--line);
+}
+.imodal__specs > div { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.imodal__specs > div:nth-child(odd) { padding-right: 16px; }
+.imodal__specs > div:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); }
+.imodal__specs dt { font-family: var(--ff-mono, monospace); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 4px; }
+.imodal__specs dd { margin: 0; font-size: 14.5px; line-height: 1.4; color: var(--fg); overflow-wrap: anywhere; }
+.imodal__acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 12px; }
+
+.imodal__x {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid var(--g-border);
+  background: var(--g-bg-2); color: var(--fg);
+  cursor: pointer;
+  transition: background-color var(--dur-fast, .2s) var(--ease, ease), transform var(--dur-fast, .2s) var(--ease, ease);
+}
+.imodal__x svg { width: 20px; height: 20px; }
+.imodal__x:hover { background: var(--surface); transform: rotate(90deg); }
+
+/* ---- lightbox (referenca, galerija) ---- */
+.imodal--lb .imodal__panel { width: min(1180px, 100%); }
+.imodal--lb .imodal__in { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.imodal--lb .imodal__media { min-height: 420px; }
+.imodal--lb .imodal__media:has(.im-photo) { background: rgba(var(--bg-rgb), .5); }
+.imodal--text .imodal__in { grid-template-columns: 1fr; }
+.imodal--text .imodal__media { display: none; }
+.imodal--text .imodal__panel { width: min(720px, 100%); }
+.imodal__meta { margin: 0; font-size: 11px; letter-spacing: .12em; color: var(--fg-muted); }
+.imodal__nav { display: flex; gap: 8px; margin-top: auto; }
+.imodal__navb {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid var(--g-border); background: var(--g-bg); color: var(--fg); cursor: pointer;
+  transition: background-color var(--dur-fast, .2s) var(--ease, ease);
+}
+.imodal__navb svg { width: 20px; height: 20px; }
+.imodal__navb:hover { background: var(--surface); }
+
+/* ---- kartice koje otvaraju ploču ---- */
+.is-item { cursor: pointer; }
+.is-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---- tablet: jedna kolona ---- */
+@media (max-width: 900px) {
+  .imodal__in, .imodal--lb .imodal__in { grid-template-columns: 1fr; }
+  .imodal__media { border-right: 0; border-bottom: 1px solid var(--g-border); border-radius: var(--g-r, 28px) var(--g-r, 28px) 0 0; min-height: 0; aspect-ratio: 16 / 10; }
+  .imodal--lb .imodal__media { min-height: 0; aspect-ratio: 4 / 3; }
+}
+/* ---- telefon: list preko celog ekrana ---- */
+@media (max-width: 639.98px) {
+  .imodal { padding: 0; place-items: stretch; }
+  .imodal__panel {
+    width: 100%; height: 100%; max-height: none; border-radius: 0; border: 0;
+    transform: translateY(24px);
+  }
+  .imodal__media, .imodal--lb .imodal__media { border-radius: 0; }
+  .imodal__specs { grid-template-columns: 1fr; }
+  .imodal__specs > div:nth-child(even) { padding-left: 0; border-left: 0; }
+  .imodal__acts .btn { flex: 1 1 100%; justify-content: center; }
+  .imodal__x { position: fixed; top: 12px; right: 12px; }
+}
+/* ==========================================================================
+   Strane detalja (detalji/<slug>.html, en/details/<slug>.html — generiše
+   _tools/items/gen-details.js). Isti delovi kao na ostalim podstranama
+   (pagehead, section, split, tbl-glass, pcard); ovde samo razlike.
+   ========================================================================== */
+/* render u kapsuli desno: ceo kadar (contain) na studijskoj podlozi rendera */
+.pagehead--item .pagehead__media.ditem-hero {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 40%, #E5E6E8 100%);
+  overflow: hidden;
+}
+html[data-theme="dark"] .pagehead--item .pagehead__media.ditem-hero { background: linear-gradient(180deg, #0A0D12 0%, #0A0D12 45%, #06070B 100%); }
+.pagehead--item .pagehead__media.ditem-hero picture { position: absolute; inset: 0; }
+.pagehead--item .pagehead__media.ditem-hero picture img { object-fit: contain; }
+.pagehead--item .ditem-illu { position: absolute; inset: 18% 14%; color: var(--accent); }
+.pagehead--item .ditem-illu svg { width: 100%; height: 100%; }
+.pagehead--item .pill-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; }
+.pagehead--item .u-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+/* ispod 960 px render ide ispod teksta, pun (ne prigušen iza teksta) */
+@media (max-width: 959px) {
+  .pagehead--item .pagehead__media.ditem-hero {
+    position: relative; inset: auto; top: auto; bottom: auto; right: auto;
+    width: auto; margin: 24px var(--gutter) 0; aspect-ratio: 16 / 10; opacity: 1;
+    border-radius: var(--g-r-in, 20px); box-shadow: var(--glass-shadow-sm);
+  }
+}
+.ditem-h {
+  font-family: var(--ff-display); font-weight: 700; letter-spacing: -.015em;
+  font-size: clamp(20px, 1.8vw, 26px); line-height: 1.15; margin: 0 0 16px;
+}
+.ditem-drawing { margin: 0; padding: 16px; border-radius: var(--g-r-in, 20px); }
+.ditem-drawing img { display: block; width: 100%; height: auto; border-radius: 10px; background: #fff; }
+.ditem-drawing figcaption { margin-top: 12px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.ditem-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(24px, 3vw, 40px); }
+.ditem-cta > div:first-child { max-width: 60ch; }
+.ditem-cta .u-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+.ditem-rel { color: inherit; text-decoration: none; }
+.ditem-rel .ditem-illu { display: grid; place-items: center; color: var(--accent); padding: 12% 18%; }
+.ditem-rel .ditem-illu svg { width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .imodal__scrim, .imodal__panel { transition: none; }
+  .imodal__panel { transform: none; }
+}
+@media print { .imodal { display: none !important; } }
+
+/* Dugme „otvori“ u kartici koja ima sopstvene veze (js/modal.js): skriveno dok ga
+   tastatura ne fokusira, tada se vidi kao pilula u gornjem levom uglu kartice. */
+.im-open:focus-visible {
+  position: absolute; left: 12px; top: 12px; z-index: 6;
+  width: auto; height: auto; padding: 6px 14px; clip: auto; overflow: visible;
+  border-radius: var(--r-pill); background: var(--brand); color: var(--brand-ink);
+  font-size: var(--t-sm); font-weight: 600;
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}

@@ -1,0 +1,23 @@
+{
+ "service": {
+  "secenje-cnc-plazma": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M27 4h10l2 10H25z\"/><path d=\"M32 14v5\"/><path d=\"m32 19-4 6 6 3-4 7\"/><path d=\"M6 38h52\"/><path d=\"M6 44h52\" stroke-dasharray=\"2 4\"/><path d=\"m22 28-3-3M42 28l3-3M20 35l-4 1M44 35l4 1\"/></svg>",
+  "gasno-rezanje": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M32 4c-7 8-12 13-12 20a12 12 0 0 0 24 0c0-4-2-8-5-11-1 3-3 5-5 6 2-5 1-10-2-15z\"/><path d=\"M32 30a4 4 0 0 0 4-4c0-2-2-4-4-6-2 2-4 4-4 6a4 4 0 0 0 4 4z\"/><path d=\"M6 40h52v4H6z\"/></svg>",
+  "secenje-makazama": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M8 6h48l-6 20H14z\"/><path d=\"M4 32h56\"/><path d=\"M4 38h56v6H4z\"/><path d=\"M14 26v6M50 26v6\" stroke-dasharray=\"1 3\"/></svg>",
+  "slitovanje": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><circle cx=\"18\" cy=\"14\" r=\"7\"/><circle cx=\"32\" cy=\"14\" r=\"7\"/><circle cx=\"46\" cy=\"14\" r=\"7\"/><circle cx=\"25\" cy=\"30\" r=\"7\"/><circle cx=\"39\" cy=\"30\" r=\"7\"/><path d=\"M4 22h56\"/><path d=\"M4 42h56M14 42v4M26 42v4M38 42v4M50 42v4\"/></svg>",
+  "premotavanje-kotura": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><circle cx=\"28\" cy=\"24\" r=\"19\"/><circle cx=\"28\" cy=\"24\" r=\"13\"/><circle cx=\"28\" cy=\"24\" r=\"6\"/><path d=\"M28 43h32\"/><path d=\"M47 24a19 19 0 0 0-19-19\"/></svg>",
+  "savijanje-limova": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M27 4h10v10l-5 8-5-8z\"/><path d=\"M18 44l14-16 14 16z\"/><path d=\"M4 40h14M46 40h14\"/><path d=\"M6 30l26 8 26-8\"/></svg>",
+  "lucno-savijanje": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M6 42a26 26 0 0 1 52 0\"/><path d=\"M12 42a20 20 0 0 1 40 0\"/><path d=\"M32 42 12 25\"/><path d=\"M32 42V20\" stroke-dasharray=\"2 3\"/><circle cx=\"32\" cy=\"42\" r=\"1.5\"/></svg>",
+  "ispravljanje-flahova": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M4 26c5-7 9-7 14 0s9 7 14 0\"/><path d=\"M32 26h28\"/><path d=\"M4 32c5-7 9-7 14 0s9 7 14 0\"/><path d=\"M32 32h28\"/><circle cx=\"40\" cy=\"15\" r=\"6\"/><circle cx=\"52\" cy=\"43\" r=\"6\"/></svg>",
+  "izrada-trapeznog-lima": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M4 32l5-14h8l5 14h8l5-14h8l5 14h8l5-14\"/><path d=\"M4 44h56M4 42v4M60 42v4\"/></svg>",
+  "izrada-oluka": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M12 12v8a20 20 0 0 0 40 0v-8\"/><path d=\"M8 12h8M48 12h8\"/><path d=\"M4 6h10v6\"/><path d=\"M32 40v6\"/></svg>",
+  "profilisanje-parapeta-i-lamperije": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M8 12h24l-6 24h30\"/><path d=\"M8 18h18\" stroke-dasharray=\"2 3\"/><path d=\"M32 42h26\" stroke-dasharray=\"2 3\"/></svg>",
+  "probijanje-i-isecanje-uglova": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M24 4h16v12H24z\"/><path d=\"M28 16h8v6h-8z\"/><path d=\"M6 32h20M38 32h20\"/><path d=\"M6 38h52\"/><path d=\"M26 32v6M38 32v6\"/><path d=\"M26 44h12\" stroke-dasharray=\"2 3\"/></svg>",
+  "secenje-profila": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><circle cx=\"15\" cy=\"20\" r=\"10\"/><circle cx=\"49\" cy=\"20\" r=\"10\"/><path d=\"M15 10h34\"/><path d=\"M15 30h34\"/><path d=\"m17 30 2 3 2-3 2 3 2-3 2 3 2-3 2 3 2-3 2 3 2-3 2 3 2-3 2 3 2-3 2 3\"/><path d=\"M26 40h12v6H26z\"/></svg>",
+  "grifovanje": "<svg viewBox=\"0 0 64 48\" focusable=\"false\"><path d=\"M6 16h52v14H6z\"/><path d=\"M12 23c2-3 5-3 7 0M24 23c2-3 5-3 7 0M36 23c2-3 5-3 7 0M48 23c2-3 5-3 7 0\"/><path d=\"M6 36h52\" stroke-dasharray=\"2 4\"/></svg>"
+ },
+ "reference": {
+  "ref-rad-na-visini": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 19V5M6 11l6-6 6 6\"/></svg>",
+  "ref-velike-kolicine": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m12 3 9 5-9 5-9-5 9-5z\"/><path d=\"m3 13 9 5 9-5\"/></svg>",
+  "ref-slozeni-detalji": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 4v7.5M15 4v7.5M12 11.5v4\"/><path d=\"M3 19h18\"/><path d=\"M12 15.5 10 19M12 15.5 14 19\"/></svg>"
+ }
+}

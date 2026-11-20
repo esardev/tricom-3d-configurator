@@ -1,0 +1,126 @@
+<?php defined('TRICOM') || exit; ?>
+<footer class="site-footer dark">
+  <nav class="footer__lines wrap" aria-label="Business lines">
+    <a class="fline" href="../products.html"><span class="label">01</span><b>Roofing and gutter systems</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="fline" href="../services.html"><span class="label">02</span><b>Metal processing</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="fline" href="../products.html?group=limovi#prog"><span class="label">03</span><b>Sheet, tubes and sections</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </nav>
+
+  <div class="footer__cta wrap">
+    <div class="split split--60">
+      <div>
+        <h2 data-reveal="cut">Send a specification — get a price and lead time.</h2>
+        <p class="lead">Thickness, dimensions, quantity. For plasma cutting, a DXF or DWG file or a dimensioned sketch is enough.</p>
+      </div>
+      <div class="stack">
+        <a class="btn btn--lg btn--block" href="../contact.html#upit">Request a quote <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <?= site_quote_phones($L) ?>
+        <p class="mono muted"><?= site_c('hours', $L) ?></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__main wrap">
+    <div class="footer__col footer__brand">
+      <img src="../../assets/tricom-logo-web.png?v=<?= $V ?>" alt="TRICOM" width="610" height="300">
+      <p>Manufacture and sale of metal products and sheet-metal roofing accessories in Batajnica. A family trade since 1966.</p>
+      <div class="social u-mt-24">
+        <?php if (site_c('fb', $L) !== ''): ?><a href="<?= site_c('fb', $L) ?>" target="_blank" rel="noopener" aria-label="TRICOM on Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5h-2.5A4.5 4.5 0 0 0 10 7v3H7v3.5h3v8h3.5v-8h3l.5-3.5h-3.5V7a1 1 0 0 1 1-1H17z"/></svg>
+        </a><?php endif; ?>
+        <a href="mailto:<?= site_c('email', $L) ?>" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15"/><path d="m2.5 6 9.5 7.2L21.5 6"/></svg></a>
+        <a href="tel:<?= site_c('tel', $L) ?>" aria-label="Call sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h4>Services and range</h4>
+      <ul>
+        <li><a href="../plasma-cutting.html">CNC plasma cutting</a></li>
+        <li><a href="../services.html#secenje">Cutting sheet and sections</a></li>
+        <li><a href="../services.html#savijanje">Bending and forming</a></li>
+        <li><a href="../products.html?group=krov#prog">Roofing and façade systems</a></li>
+        <li><a href="../products.html?group=oluci#prog">Gutter systems</a></li>
+        <li><a href="../configurator.html">3D roof configurator</a></li>
+        <li><a href="../calculators.html">Roofing sheet calculators</a></li>
+        <li><a href="../products.html?group=cevi#prog">Steel tubes and sections</a></li>
+        <li><a href="../products.html?group=alati#prog">Tools and equipment</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../products.html">Products</a></li>
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../configurator.html">Configurator</a></li>
+        <li><a href="../references.html">References</a></li>
+        <li><a href="../gallery.html">Gallery</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <?= site_footer_sheet($L) ?>
+    </div>
+  </div>
+
+  <div class="footer__bottom wrap">
+    <span>&copy; <span data-year>2026</span> TRICOM d.o.o., Batajnica &middot; Tax ID <?= site_c('pib', $L) ?></span>
+    <span class="made">Your business partner since 1966.</span>
+    <span class="credit">Website by <a href="https://apisdevelopment.com" rel="noopener" target="_blank">Apis Development</a></span>
+  </div>
+</footer>
+
+<!-- Plutajuci dok: asistent dole levo, nazad na vrh dole desno, u istoj liniji -->
+<div class="dock">
+
+  <div class="u-rel">
+    <div class="ai-nudge" id="aiNudge" role="status">
+      A question about <b>thickness, profile or price</b>? Ask now.
+      <button class="ai-nudge__x" id="aiNudgeX" type="button" aria-label="Close message">&times;</button>
+    </div>
+    <button class="dock-btn ai-fab" id="aiFab" type="button"
+            aria-label="Open the TRICOM assistant" aria-expanded="false" aria-controls="aiPanel">
+      <span class="ai-fab__dot" aria-hidden="true"></span>
+      <span class="ai-fab__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.2-4.2A8 8 0 0 1 13 4a8 8 0 0 1 8 8z"/><path d="M9 11h8M9 15h5"/></svg></span>
+      <span class="ai-fab__close" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></span>
+    </button>
+  </div>
+
+  <button class="dock-btn totop" id="toTop" type="button" aria-label="Back to top">
+    <svg class="totop__ring" viewBox="0 0 60 60" aria-hidden="true">
+      <circle class="bg" cx="30" cy="30" r="27"/>
+      <circle class="fg" cx="30" cy="30" r="27"/>
+    </svg>
+    <span class="totop__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+    <span class="totop__pct mono" id="toTopPct" aria-hidden="true">0%</span>
+  </button>
+</div>
+
+<!-- Asistent: radi lokalno, bez API-ja -->
+<section class="ai-panel" id="aiPanel" aria-hidden="true" inert aria-label="TRICOM assistant">
+  <div class="ai-head">
+    <div class="ai-head__av" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v5M12 17v5M4.2 4.2l3.6 3.6M16.2 16.2l3.6 3.6M2 12h5M17 12h5M4.2 19.8l3.6-3.6M16.2 7.8l3.6-3.6"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="ai-head__t">
+      <b>TRICOM assistant</b>
+      <span>instant answers &middot; works offline</span>
+    </div>
+    <button class="ai-head__btn" id="aiReset" type="button" aria-label="New conversation" title="New conversation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg></button>
+    <button class="ai-head__btn" id="aiClose" type="button" aria-label="Close the assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+
+  <div class="ai-body" id="aiBody" role="log" aria-live="polite" aria-atomic="false"></div>
+  <div class="ai-chips" id="aiChips"></div>
+
+  <form class="ai-form" id="aiForm" autocomplete="off">
+    <label class="sr-only" for="aiInput">Your question</label>
+    <textarea id="aiInput" rows="1" placeholder="E.g. what sheet thickness can you cut?"></textarea>
+    <button class="ai-send" id="aiSend" type="submit" aria-label="Send question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 20 4l-8 16-2-6-6-2z"/></svg></button>
+  </form>
+  <p class="ai-foot">The assistant answers from a database about TRICOM. For prices, stock and order status, call sales.</p>
+</section>
+

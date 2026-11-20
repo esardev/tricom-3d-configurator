@@ -1,0 +1,8 @@
+# TRICOM — app/: konfiguracija, kod, dnevnik i sesije. Nikad se ne služi sa weba.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
